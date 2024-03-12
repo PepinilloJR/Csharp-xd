@@ -38,7 +38,8 @@ por ejemplo, si no usaramos using system, habria que escribir para el console, l
 
  */
 
-Console.WriteLine("sas"); // si una instruccion esta fuera y antes de la definicion de las clases, se denomina instruccion de orden superior y se sobrepone a la ejecucion de Main, ojo con eso
+// Console.WriteLine("sas"); -->  si una instruccion esta fuera y antes de la definicion de las clases, se denomina instruccion de
+// orden superior y se sobrepone a la ejecucion de Main, ojo con eso
 
 namespace PrimerNamespace
 {
@@ -81,39 +82,47 @@ namespace PrimerNamespace
                     Console.WriteLine(args[0]);
                 }
                 Console.WriteLine("hola");
-                Console.WriteLine(cola);
-                Console.WriteLine(division);
-                Console.WriteLine(modulo);
-                Console.WriteLine(colaEspejo);
+
+                // prestar atencion aqui
+
+                // en esta escritura, usamos un ToString para convertir un valor Entero en String, para sumarlo a la frase
+                // que estamos escribiendo
+                Console.WriteLine("tamaño de la cola:" + cola.ToString()); 
+                // pero no es nescesario en muchos casos, en este caso la inferencia de tipos de C# entiende que
+                // si le sumamos un valor No String a otro String, debe obtener un String
+                // por lo tanto, podemos hacer la suma sin conversiones explicitas
+                Console.WriteLine("division por 2 de la cola:" + division);
+                Console.WriteLine("resto de la division:" + modulo);
+                Console.WriteLine("tamaño de la cola negativa:"+colaEspejo);
             }
             // luego tenemos las conversiones
 
             // si tengo un valor double y un entero y quiero pasar el double a entero, puedo hacer esto
 
             double valor = 3.45;
-            int novalor = 4;
+            int novalor;
 
             novalor = (int) valor;
-            Console.WriteLine(novalor);
+            Console.WriteLine("valor double 3.45 convertido a entero:" + novalor);
 
             // esto se denomina conversion explicita o casting
 
             // luego la conversion implicita son las que existen entre algunos tipos de datos
-            // como el int y el long y el float y el double
+            // como el int y el long y el float y el double, haciendo uso de la inferencia de tipos que vimos antes
 
             int habitantes = 1000000;
             long habitantesLong = habitantes;
-            Console.WriteLine(habitantesLong);
+            Console.WriteLine("longitud de habitantes:" + habitantesLong);
             float pesoFloat = 56.56F;
             double pesoDouble = pesoFloat;
-            Console.WriteLine(pesoDouble);
+            Console.WriteLine("peso en float convertido a double:" + pesoDouble);
 
             // conversiones de tipo, de texto a valores numericos
             // para convertir letras a numeros, utilizamos el metodo de la clase number, parse
             string palabra = Console.ReadLine(); // la palabra no puede contener datos no numericos // lee lo que se ingresa por consola retorna string
 
             int numero = int.Parse(palabra); // puede hacerse con double, float, etc etc
-            Console.WriteLine(numero);
+            Console.WriteLine("numero ingresado como string convertido a int:" + numero);
 
 
 

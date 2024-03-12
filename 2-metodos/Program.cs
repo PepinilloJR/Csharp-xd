@@ -28,11 +28,11 @@ namespace programa
             Console.WriteLine(objeto.SumatoriaEnteros(-1, 2));
             
             // por ejemplo aca, llamamos otro pero lo llamamos desde la propia clase ya que es estatico
-            Console.WriteLine(ProgramaPrincipal.SumatoriaNumeros(-1, 2));
+            Console.WriteLine("sumatoria de numeros: " + ProgramaPrincipal.SumatoriaNumeros(-1, 2));
             // ejemplo de sobrecarga
-            Console.WriteLine(ProgramaPrincipal.SumatoriaNumeros(-1, 2, 3));
+            Console.WriteLine("sumatoria de numeros: " + ProgramaPrincipal.SumatoriaNumeros(-1, 2, 3));
             // ejemplo de parametro opcional
-            Console.WriteLine(ProgramaPrincipal.Volumen(1,2));
+            Console.WriteLine("sumatoria de numeros: " + ProgramaPrincipal.Volumen(1,2));
 
             Console.ReadKey(false); // el false en el metodo ReadKey desactiva la espera a otra tecla del usuario
 
