@@ -1,0 +1,15 @@
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\bin\Debug\net8.0\Uso del checked.exe
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\bin\Debug\net8.0\Uso del checked.deps.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\bin\Debug\net8.0\Uso del checked.runtimeconfig.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\bin\Debug\net8.0\Uso del checked.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\bin\Debug\net8.0\Uso del checked.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\obj\Debug\net8.0\Uso del checked.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\obj\Debug\net8.0\Uso del checked.AssemblyInfoInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\obj\Debug\net8.0\Uso del checked.AssemblyInfo.cs
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\obj\Debug\net8.0\Uso del checked.csproj.CoreCompileInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\obj\Debug\net8.0\Uso del checked.sourcelink.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\obj\Debug\net8.0\Uso del checked.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\obj\Debug\net8.0\refint\Uso del checked.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\obj\Debug\net8.0\Uso del checked.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\obj\Debug\net8.0\Uso del checked.genruntimeconfig.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\4.5-Uso del checked en excepciones\Uso del checked\obj\Debug\net8.0\ref\Uso del checked.dll

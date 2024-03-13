@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("Manejo de excepciones")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("Uso del checked")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9a1c1d36e368443455f545ae3cd00c0ed6f5a6d1")]
-[assembly: System.Reflection.AssemblyProductAttribute("Manejo de excepciones")]
-[assembly: System.Reflection.AssemblyTitleAttribute("Manejo de excepciones")]
+[assembly: System.Reflection.AssemblyProductAttribute("Uso del checked")]
+[assembly: System.Reflection.AssemblyTitleAttribute("Uso del checked")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Generado por la clase WriteCodeFragment de MSBuild.

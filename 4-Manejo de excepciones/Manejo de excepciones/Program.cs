@@ -14,9 +14,10 @@ namespace manejo_excep
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Resultado final: " + Suma_nueva());
+            Console.WriteLine("Resultado final: " + suma_mas_Nueva());
         }
 
+        // leer cada metodo de sumas para aprender a manejar interrupciones
 
         static int Suma() {
             int numeroFinal = 0;
@@ -68,6 +69,7 @@ namespace manejo_excep
                 string Numero1 = Console.ReadLine();
                 Console.WriteLine("Ingrese segundo numero:");
                 string Numero2 = Console.ReadLine();
+                
                 try
                 {
                     numeroFinal = int.Parse(Numero1) + int.Parse(Numero2);
@@ -83,10 +85,66 @@ namespace manejo_excep
                 // la clase base Exception
                 {
                     intentos--;
-                    Console.WriteLine("Se ha producido un error de overflow - Intentos restantes:" + intentos);
+                    Console.WriteLine("Se ha producido un error de overflow - Intentos restantes: " + intentos);
                     Console.WriteLine(ex.Message);
                     Console.WriteLine(ex.Source);
                 }
+
+                if (intentos < 0)
+                {
+                    Console.WriteLine("Se acabaron los intentos, entregando resultado final 0.");
+                    break;
+                }
+            }
+            return numeroFinal;
+        }
+
+
+        static int suma_mas_Nueva()
+        {
+            int numeroFinal = 0;
+            int intentos = 3;
+            while (true)
+            {
+                Console.WriteLine("ingrese primer numero:");
+                string Numero1 = Console.ReadLine();
+                Console.WriteLine("Ingrese segundo numero:");
+                string Numero2 = Console.ReadLine();
+
+                try
+                {
+                    numeroFinal = int.Parse(Numero1) + int.Parse(Numero2);
+                    break;
+                }
+
+                // conociendo las versiones anteriores, con la captura general 
+                // tendremos que buscar la forma de tratar especificamente cada tipo
+                // de excepcion
+
+
+                // para ello usamos excepciones de filtro, utilizando la palabra clave contextual when,
+                // se usa para especificar una condición de filtro en los siguientes contextos: try catch, switch
+                
+
+                // podemos obtener el tipo con la funcion heredada de tipo object,
+                // .GetType(), que devuelve un objeto System.Type que representa que tipo es
+                // luego, el operador --> typeof --> devuelve un objeto System.Type que muestra el tipo de una clase
+                catch (Exception ex) when (ex.GetType() != typeof(FormatException))
+                {
+                    intentos--;
+                    Console.WriteLine("Se ha producido un error - Intentos restantes: " + intentos);
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.Source);
+                }
+                catch (FormatException ex) // luego planteamos el catch para el que estamos especificando
+                {
+                    intentos--;
+                    Console.WriteLine("Se ha producido un error de formato - Intentos restantes: " + intentos);
+                    Console.WriteLine("el tipo de la excepcion: " + ex.GetType().Name); // aca muestro el nombre del tipo de ex
+                    Console.WriteLine("el tipo de la clase de FormatException: " + typeof(FormatException).Name); // aca mustreo el nombre de tipo de la clase FormatException
+                    Console.WriteLine("Mensaje de la excepcion: " + ex.Message);
+
+                } 
 
                 if (intentos < 0)
                 {
