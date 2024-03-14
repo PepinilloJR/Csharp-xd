@@ -16,7 +16,7 @@ namespace UsoDelChecked {
             // esto deberia generar un overFlow, pero el compilador lo maneja solo, simplemente entregando un valor incorrecto
 
             // para que no suceda, usamos la estructura Checked, que indica al compilador analizar el codigo de manea exhaustiva y no dejar pasar ninguna excepcion
-
+            // checked al final del dia se reduce exclusivamente para el uso de enteros y tipo long
             checked
             {
                 try

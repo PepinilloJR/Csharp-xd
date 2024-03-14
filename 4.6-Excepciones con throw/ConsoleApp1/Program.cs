@@ -23,12 +23,17 @@
                 Console.WriteLine("Introduce numero de mes: ");
                 int MesSoli = int.Parse(Console.ReadLine());
                 Console.WriteLine(obtenerMes(MesSoli));
-            } catch (FormatException ex)
+            } catch (ArgumentOutOfRangeException ex) // para tomar el exception que generamos con throw
             {
                 Console.WriteLine("NO INGRESO UN NUMERO VALIDO");
                 Console.WriteLine("activaste el error pibe -> " + ex.Message);
             }
-            
+            catch (FormatException ex) // otro posible exception que se puede dar
+            {
+                Console.WriteLine("NO INGRESO UN NUMERO");
+                Console.WriteLine("activaste el error pibe -> " + ex.Message);
+            }
+
         }
 
 
