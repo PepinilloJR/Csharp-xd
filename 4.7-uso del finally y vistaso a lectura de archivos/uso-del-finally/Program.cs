@@ -46,7 +46,7 @@ namespace usoDelFinally
 
             } finally // ahora si, la estructura finally, acompaña al try catch funcionando como un codigo que se ejecutara dando igual si hay o no una excepcion, en este caso, lo usamos para cerrar siempre el stream
             {
-                // cerramos el stream, un stream es un flujo de datos atravez de un canal que utiliza un buffer para almacenar datos temporalmente mientras se transfieren
+                // cerramos el stream, un stream es un flujo de datos atraves de un canal que utiliza un buffer para almacenar datos temporalmente mientras se transfieren
                 // de un punto a otro, este debe ser liberado una vez que terminemos de usarlo, para liberar recursos por el resto del programa
 
                 if (lector != null)
