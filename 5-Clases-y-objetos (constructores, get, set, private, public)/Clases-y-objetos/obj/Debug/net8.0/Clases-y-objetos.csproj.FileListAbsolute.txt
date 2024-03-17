@@ -13,3 +13,18 @@ C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos\Clases-y
 C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos\Clases-y-objetos\obj\Debug\net8.0\Clases-y-objetos.pdb
 C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos\Clases-y-objetos\obj\Debug\net8.0\Clases-y-objetos.genruntimeconfig.cache
 C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos\Clases-y-objetos\obj\Debug\net8.0\ref\Clases-y-objetos.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\bin\Debug\net8.0\Clases-y-objetos.exe
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\bin\Debug\net8.0\Clases-y-objetos.deps.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\bin\Debug\net8.0\Clases-y-objetos.runtimeconfig.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\bin\Debug\net8.0\Clases-y-objetos.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\bin\Debug\net8.0\Clases-y-objetos.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\obj\Debug\net8.0\Clases-y-objetos.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\obj\Debug\net8.0\Clases-y-objetos.AssemblyInfoInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\obj\Debug\net8.0\Clases-y-objetos.AssemblyInfo.cs
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\obj\Debug\net8.0\Clases-y-objetos.csproj.CoreCompileInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\obj\Debug\net8.0\Clases-y-objetos.sourcelink.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\obj\Debug\net8.0\Clases-y-objetos.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\obj\Debug\net8.0\refint\Clases-y-objetos.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\obj\Debug\net8.0\Clases-y-objetos.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\obj\Debug\net8.0\Clases-y-objetos.genruntimeconfig.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\5-Clases-y-objetos (constructores, get, set, private, public)\Clases-y-objetos\obj\Debug\net8.0\ref\Clases-y-objetos.dll
