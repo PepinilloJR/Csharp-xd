@@ -18,12 +18,12 @@ namespace ClasesYobjetos
             // pero usando un metodo constructor por default
 
             // creando otro ciruculo pero con el otro constructor creado por sobrecarga
-            Circulo circulaso = new Circulo([20,15], 10);
+            Circulo circulaso = new Circulo([20,15], 4);
 
             // uso metodos de acceso para modificar circulito
 
-            circulito.setCentro([6, 7]);
-            circulito.setRadio(10);
+            circulito.setCentro([12, 7]);
+            circulito.setRadio(5);
 
 
             circulito.DibujarCirculo();
