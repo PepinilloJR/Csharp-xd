@@ -1,5 +1,8 @@
 ﻿using System.Drawing;
 
+
+// no recuerdo que estaba haciendo aca pero uso hilos asi que capaz vaya para otra unidad 
+
 namespace EntradaSalida
 {
     class Program
@@ -58,7 +61,7 @@ namespace EntradaSalida
         {
             while (true)
             {
-                Console.Se
+                //Console.Se
                 Console.ReadKey();
                 Console.Clear();
             }

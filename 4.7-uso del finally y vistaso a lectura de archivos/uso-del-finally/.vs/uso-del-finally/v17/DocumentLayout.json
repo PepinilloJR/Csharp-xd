@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\pepin\\OneDrive\\Escritorio\\proyectos en .NET\\4.7-uso del finally\\uso-del-finally\\",
+  "WorkspaceRootPath": "C:\\Users\\pepin\\OneDrive\\Escritorio\\proyectos en .NET\\4.7-uso del finally y vistaso a lectura de archivos\\uso-del-finally\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7ABE4C61-0116-4357-AC3D-719C94D7F645}|uso-del-finally.csproj|c:\\users\\pepin\\onedrive\\escritorio\\proyectos en .net\\4.7-uso del finally\\uso-del-finally\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7ABE4C61-0116-4357-AC3D-719C94D7F645}|uso-del-finally.csproj|c:\\users\\pepin\\onedrive\\escritorio\\proyectos en .net\\4.7-uso del finally y vistaso a lectura de archivos\\uso-del-finally\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7ABE4C61-0116-4357-AC3D-719C94D7F645}|uso-del-finally.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -20,11 +20,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\pepin\\OneDrive\\Escritorio\\proyectos en .NET\\4.7-uso del finally\\uso-del-finally\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\pepin\\OneDrive\\Escritorio\\proyectos en .NET\\4.7-uso del finally y vistaso a lectura de archivos\\uso-del-finally\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\pepin\\OneDrive\\Escritorio\\proyectos en .NET\\4.7-uso del finally\\uso-del-finally\\Program.cs",
+              "ToolTip": "C:\\Users\\pepin\\OneDrive\\Escritorio\\proyectos en .NET\\4.7-uso del finally y vistaso a lectura de archivos\\uso-del-finally\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAXAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAEMAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-14T14:50:18.561Z",
               "EditorCaption": ""

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("uso-del-finally")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e0f6cc69ac35719dbfffdf10549e40d61ab9dc87")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d91b8ac1656838401a3586f20a9974e196cd2f9b")]
 [assembly: System.Reflection.AssemblyProductAttribute("uso-del-finally")]
 [assembly: System.Reflection.AssemblyTitleAttribute("uso-del-finally")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

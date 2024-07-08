@@ -19,14 +19,14 @@ namespace usoDelFinally
                                                   // esto es asi porque las variables de tipo var funcionan con tipo implicito, es decir, debe haber algo que le diga al compilador que tipo son, por lo tanto, deben inicializarse
                                                   // al mismo tiempo que se declaran, pero nosotros no queremos hacer eso, por ello, hicimos lo anterior descrito 
 
-            // y si, podemos declarar variables con clases de este modo, ya que las clases declaran en si nuevos tipos de datos, diferentes de los tipos primitivos como int, float, etc.
+            // y si, podemos declarar variables con clases de este modo, es decir, tipos StreamReader, ya que las clases declaran en si nuevos tipos de datos mas complejos, diferentes de los tipos primitivos como int, float, etc.
 
 
             int sumatoria = 0;
             try
             {
                 // inicializamos el lector de bytes creando una nueva instancia de la clase StreamReader, el cual necesita de un path, es decir, creamos un objeto StreamReader
-                lector = new System.IO.StreamReader("texto.txt");
+                lector = new System.IO.StreamReader("texto.txt"); // originalmente lo declaramos como un objeto vacio, llamamos a su constructor con los datos que queremos
                 // en este metodo le decimos que lea y devuelva toda la secuencia desde la posicion actual del puntero de lectura, en este caso 0 (estamos leyendo a partir del byte 0)
                 string texto = lector.ReadToEnd();
                 for (int i = 0; i <= texto.Length; i++) {

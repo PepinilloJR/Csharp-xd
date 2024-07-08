@@ -45,7 +45,7 @@ namespace ClasesYobjetos
         // a la clase cuando se instancia, este metodo es especial y se escribe con el mismo
         // nombre que la clase, a su vez, no tiene un tipo de return especificado y debe ser publico
         // puede o no tener parametros, y puede producirse sobrecarga de constructores (tener mas de uno),
-        // donde estos deben diferenciarse por el numero o tipo de parametros
+        // donde estos deben diferenciarse por el numero o tipo de parametros -> Circulo(radio) o Circulo(Longitud, densidad)
 
         public Circulo()
         {

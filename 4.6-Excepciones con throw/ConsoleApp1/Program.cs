@@ -9,7 +9,8 @@
             try
             {
                 int resultado = checked(Numero + 20);// podemos usar el checked solo para una linea de este modo
-                int resultadoUnchecked = unchecked(Numero + 20); // tambien podemos pedir que cierta linea no maneje su excepcion
+                int resultadoUnchecked = unchecked(Numero + 20); // tambien podemos pedir que cierta linea no maneje su excepcion y que lo deje pasar con algun manejo default del lenguaje, esto solo sirve para casos
+                                                                 // donde el compilador tiene activado checked por defecto para todo el codigo, si sucede, podemos usar unchecked para casos particulares
                 Console.WriteLine(resultado);
 
             } catch (OverflowException ex)
@@ -23,7 +24,8 @@
                 Console.WriteLine("Introduce numero de mes: ");
                 int MesSoli = int.Parse(Console.ReadLine());
                 Console.WriteLine(obtenerMes(MesSoli));
-            } catch (ArgumentOutOfRangeException ex) // para tomar el exception que generamos con throw
+            } catch (ArgumentOutOfRangeException ex) // para tomar el exception que generamos con throw, es un "juego de palabras", la funcion obtener mes lanzara (thow) una excepcion si
+                                                     // nos equivocamos y sera atrapada (catch), luego, si es la que creemos que es, hacemos lo que esta dentro de las llaves  
             {
                 Console.WriteLine("NO INGRESO UN NUMERO VALIDO");
                 Console.WriteLine("activaste el error pibe -> " + ex.Message);
