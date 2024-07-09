@@ -123,7 +123,7 @@ namespace manejo_excep
 
 
                 // para ello usamos excepciones de filtro, utilizando la palabra clave contextual when,
-                // se usa para especificar una condición de filtro en los siguientes contextos: try catch, switch
+                // se usa para especificar una condición de filtro en los siguientes contextos: catch, switch
                 
 
                 // podemos obtener el tipo con la funcion heredada de tipo object,

@@ -29,7 +29,9 @@ namespace ClasesYobjetos
             circulito.DibujarCirculo();
             circulaso.DibujarCirculo();
 
-
+            Console.WriteLine($"cantidad de circulos{Circulo.getContador()}"); // demostracion de lo mencionado de static
+            Console.WriteLine($"cantidad de circulos{circulito.getContador2()}"); // demostracion de que las variables estaticas
+                                                                                  // mantienen un estado igual en todas las instancias
             Console.ReadKey();
         }
 
@@ -47,8 +49,9 @@ namespace ClasesYobjetos
         // puede o no tener parametros, y puede producirse sobrecarga de constructores (tener mas de uno),
         // donde estos deben diferenciarse por el numero o tipo de parametros -> Circulo(radio) o Circulo(Longitud, densidad)
 
-        public Circulo()
+        public Circulo() // constructor default
         {
+            contadorDeCirculos++;
             centro = [5, 5];
             radio = 5;
         }
@@ -56,12 +59,10 @@ namespace ClasesYobjetos
         // es decir, deja de ser privado y es accesible fuera de la clase, para ser accedido por 
         // otros metodos de otras clases, o ser llamado por una instancia de la clase 
 
-
-
-
         // sobrecarga de circulo, donde se puede especificar campos de clase por si no queremos los default
-        public Circulo(int[] centro, int radio)
+        public Circulo(int[] centro, int radio) // sobrecarga del constructor
         {
+            contadorDeCirculos++;
             this.centro = centro;
             // usando la palabra clave this, podemos usar mismo nombre en el parametro del constructor o cualquier metodo, y en el campo de la clase.
             // this entonces es una forma de hacer referencia a la instancia actual de la clase, es decir 
@@ -73,7 +74,8 @@ namespace ClasesYobjetos
 
 
         // podemos declarar propiedades, algunas se inicializaran con el constructor 
-        const double pi = 3.1416;
+        const double pi = 3.1416; // notar que las variables declaradas como const son ademas consideradas static por c#, 
+                                  // mas abajo se explica lo que implica ser static
         int[] centro; 
         int radio;
         // en general, se recomienda dejar las propiedades encapsuladas o privadas, y crear metodos de acceso
@@ -100,7 +102,28 @@ namespace ClasesYobjetos
         }
 
 
-        
+        // uso del static
+
+        // el Static para variables, son variables que pueden ser accedidas sin instanciar la clase y que
+        // mantienen su estado en dentro de la clase, y por lo tanto, la clase usara este mismo estado al realizar operaciones con esta
+        // o al crear nuevas instancias, y que por lo tanto, los objetos heredan el mismo valor o estado de esta variable,
+        // veamos un ejemplo
+        private static int contadorDeCirculos = 0;  // en este caso, creamos una variable estatica para la clase, esto implica que 
+                                                    // es una variable que existe y es la misma para todos los objetos, o la clase 
+                                                    // sea esta instanciada o no, y podemos aumentarla al instanciar un objeto usando
+                                                    // el constructor, aunque aplicaciones hay muchas mas
+
+        // de forma similar, el static para los metodos hace lo mismo, son metodos que pueden ser llamados desde la clase y que por lo tanto
+        // no requieren de ser instanciados
+        static public int getContador()
+        {
+            return contadorDeCirculos;
+        }
+        // aqui hacemos una version no estatica para demostrar que los objetos comparten el estado de "contadorDeCirculos"
+        public int getContador2()
+        {
+            return contadorDeCirculos;
+        }
     }
     partial class Circulo
     {
