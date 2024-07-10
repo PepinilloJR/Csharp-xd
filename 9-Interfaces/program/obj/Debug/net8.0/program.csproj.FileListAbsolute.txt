@@ -1,0 +1,15 @@
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\bin\Debug\net8.0\program.exe
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\bin\Debug\net8.0\program.deps.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\bin\Debug\net8.0\program.runtimeconfig.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\bin\Debug\net8.0\program.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\bin\Debug\net8.0\program.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\obj\Debug\net8.0\program.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\obj\Debug\net8.0\program.AssemblyInfoInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\obj\Debug\net8.0\program.AssemblyInfo.cs
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\obj\Debug\net8.0\program.csproj.CoreCompileInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\obj\Debug\net8.0\program.sourcelink.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\obj\Debug\net8.0\program.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\obj\Debug\net8.0\refint\program.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\obj\Debug\net8.0\program.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\obj\Debug\net8.0\program.genruntimeconfig.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\9-Interfaces\program\obj\Debug\net8.0\ref\program.dll
