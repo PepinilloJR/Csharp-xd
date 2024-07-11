@@ -16,7 +16,22 @@ namespace Intefaces
 
             Console.WriteLine("las frases de atencion para cada cajero son: ");
             cajero.Atender();
-            vendedorRopa.Atender();
+
+
+            // luego, para clases con multiples interfaces, como aclaramos de que interfaz queremos los metodos?
+
+            // para ello usamos el principio de sustitucion con la interfaz, pero utilizando el objeto ya preexistente (esto es posible para todas la clases no solo interfaces)
+
+            ICajeros IvendedorRopa = vendedorRopa;
+
+            IvendedorRopa.Atender(); // notemos que no podemos acceder al metodo definido en la otra interfaz que era mostrarVentas, pero podemos usar este objeto interfaz intermedio
+                                     // para filtrar los metodos que queremos usar, segun la interfaz requerida
+           
+            // luego usando la otra interfaz que le definimos a los vendedores
+            IVendedores IvendedorRopa2 = vendedorRopa;
+
+            IvendedorRopa2.Atender();
+            IvendedorRopa2.MostrarVentars();
 
         }
 
@@ -40,7 +55,7 @@ namespace Intefaces
 
 
 // las interfaces definen una especie de contrato, en la que todas las clases que lo firman deben tener implementados metodos definidos en esta interfaz
-// --> con misma cantidad de parametros y tipo
+// --> con misma cantidad de parametros y tipo --> la interfaz no permite definir campos, constructores, modificadores de acceso, etc, solo metodos basicos
 // por ejemplo, creemos una interfaz para la clase Cajero y sus derivados
 // por convencion todas las interfaces comienzan con I
 interface ICajeros
@@ -72,16 +87,31 @@ interface IVendedores
         }
     }
 
-    class VendedorRopa : Cajero, ICajeros { 
+    class VendedorRopa : Cajero, ICajeros, IVendedores { 
 
         public VendedorRopa()
         {
             salario += 400;
         }
 
-        public override void Atender()
+
+        // con la siguiente sintaxis resolvemos la ambiguedad de la interfaz con metodo duplicado
+        // considerar que no se permite en este caso modificar el tipo de acceso
+        void ICajeros.Atender()
         {
             Console.WriteLine("te estoy vendiendo ropa");
         }
+
+        
+        void IVendedores.Atender()
+        {
+            Console.WriteLine("te estoy vendiendo");
+        }
+
+        public void MostrarVentars()
+        {
+            Console.WriteLine("nunca vendo nada");
+        }
+
     }
 }
