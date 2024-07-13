@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\pepin\\OneDrive\\Escritorio\\proyectos en .NET\\11- Propiedades\\propiedades\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{44A40BF4-EB6A-4090-9442-D45175E9159E}|propiedades.csproj|c:\\users\\pepin\\onedrive\\escritorio\\proyectos en .net\\11- propiedades\\propiedades\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{44A40BF4-EB6A-4090-9442-D45175E9159E}|propiedades.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\pepin\\OneDrive\\Escritorio\\proyectos en .NET\\11- Propiedades\\propiedades\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\pepin\\OneDrive\\Escritorio\\proyectos en .NET\\11- Propiedades\\propiedades\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-13T16:58:39.291Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

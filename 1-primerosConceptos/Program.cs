@@ -105,7 +105,7 @@ namespace PrimerNamespace
             novalor = (int) valor;
             Console.WriteLine("valor double 3.45 convertido a entero:" + novalor);
 
-            // esto se denomina conversion explicita o casting
+            // esto se denomina conversion explicita o casting <--- recordar esta palabra 
 
             // luego la conversion implicita son las que existen entre algunos tipos de datos
             // como el int y el long y el float y el double, haciendo uso de la inferencia de tipos que vimos antes

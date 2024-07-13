@@ -1,0 +1,15 @@
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\bin\Debug\net8.0\structs.exe
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\bin\Debug\net8.0\structs.deps.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\bin\Debug\net8.0\structs.runtimeconfig.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\bin\Debug\net8.0\structs.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\bin\Debug\net8.0\structs.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\obj\Debug\net8.0\structs.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\obj\Debug\net8.0\structs.AssemblyInfoInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\obj\Debug\net8.0\structs.AssemblyInfo.cs
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\obj\Debug\net8.0\structs.csproj.CoreCompileInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\obj\Debug\net8.0\structs.sourcelink.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\obj\Debug\net8.0\structs.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\obj\Debug\net8.0\refint\structs.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\obj\Debug\net8.0\structs.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\obj\Debug\net8.0\structs.genruntimeconfig.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\12-Struct\structs\obj\Debug\net8.0\ref\structs.dll
