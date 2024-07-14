@@ -1,0 +1,15 @@
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\bin\Debug\net8.0\colecciones.exe
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\bin\Debug\net8.0\colecciones.deps.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\bin\Debug\net8.0\colecciones.runtimeconfig.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\bin\Debug\net8.0\colecciones.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\bin\Debug\net8.0\colecciones.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\obj\Debug\net8.0\colecciones.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\obj\Debug\net8.0\colecciones.AssemblyInfoInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\obj\Debug\net8.0\colecciones.AssemblyInfo.cs
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\obj\Debug\net8.0\colecciones.csproj.CoreCompileInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\obj\Debug\net8.0\colecciones.sourcelink.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\obj\Debug\net8.0\colecciones.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\obj\Debug\net8.0\refint\colecciones.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\obj\Debug\net8.0\colecciones.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\obj\Debug\net8.0\colecciones.genruntimeconfig.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\15-colecciones\colecciones\obj\Debug\net8.0\ref\colecciones.dll

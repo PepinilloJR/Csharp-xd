@@ -1,0 +1,15 @@
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\bin\Debug\net8.0\genericos.exe
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\bin\Debug\net8.0\genericos.deps.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\bin\Debug\net8.0\genericos.runtimeconfig.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\bin\Debug\net8.0\genericos.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\bin\Debug\net8.0\genericos.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\obj\Debug\net8.0\genericos.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\obj\Debug\net8.0\genericos.AssemblyInfoInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\obj\Debug\net8.0\genericos.AssemblyInfo.cs
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\obj\Debug\net8.0\genericos.csproj.CoreCompileInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\obj\Debug\net8.0\genericos.sourcelink.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\obj\Debug\net8.0\genericos.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\obj\Debug\net8.0\refint\genericos.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\obj\Debug\net8.0\genericos.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\obj\Debug\net8.0\genericos.genruntimeconfig.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\14-genericos\genericos\obj\Debug\net8.0\ref\genericos.dll

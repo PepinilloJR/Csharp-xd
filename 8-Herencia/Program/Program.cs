@@ -57,6 +57,10 @@ namespace Herencia
             Materiales[1].mostrarIntencion();
             Materiales[2].mostrarIntencion();
 
+            // tambien es posible realizar un casting para obtener los metodos aunque originalmente sea de tipo material, por ejemplo
+            Caja cajaCasteada = (Caja) Materiales[0];
+            cajaCasteada.mostrarPeso(); // aqui pudimos usar el metodo que habiamos definido para las cajas pero que no hicimos override, esto puede ser util tambien para desarrollar genericos solo con herencia
+
         }
     }
 
