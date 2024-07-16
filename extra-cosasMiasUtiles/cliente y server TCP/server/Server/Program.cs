@@ -21,6 +21,10 @@ namespace ServerTCP
         // una funcion para pasar un objeto a un formato Json
         public static string ToJson(Mensaje mensaje)
         {
+            if (mensaje.CONTENIDO == "")
+            {
+                mensaje.CONTENIDO = "x";
+            }
             string Json = JsonSerializer.Serialize(mensaje);
             return Json;
         }
@@ -144,7 +148,7 @@ namespace ServerTCP
                 // si recibe cero bytes implica que se desconecto el cliente
                 if (bytes == 0)
                 {
-                    break;
+                     break;
                 }
                 Thread.Sleep(100);
             }

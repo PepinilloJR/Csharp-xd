@@ -4,15 +4,18 @@ using System.Net.Sockets;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text;
-
+using System.Security.Cryptography;
 
 namespace Cliente
 {
 
     class Program
     {
+
         public static void Main(string[] args)
         {
+
+            ManejadorInput manejadorInput = new ManejadorInput();
             Console.WriteLine("ingrese ip a conectarse: ");
             string ip = Console.ReadLine();
 
@@ -20,21 +23,24 @@ namespace Cliente
             cliente.Start();
 
             Thread Receptor = new Thread(cliente.RecibirMensaje);
-            Receptor.Start();
+            Receptor.Start(manejadorInput);
             Console.WriteLine("conexion exitosa, puede escribir y tocar enter para enviar un mensaje...");
             while (true)
             {
-                
-                string texto = Console.ReadLine();
-                Mensaje mensaje = new Mensaje(texto, "usuario");
+
+                //string texto = Console.ReadLine();
+
+                manejadorInput.ManejarInput();
+                Mensaje mensaje = new Mensaje(manejadorInput.INPUT, "usuario");
                 //Console.WriteLine(mensaje.CONTENIDO);
                 cliente.EnviarMensaje(ToJson(mensaje));
-                if (mensaje.CONTENIDO == "x")
+                if (mensaje.CONTENIDO == "/quit")
                 {
                     break;
                 }
 
                 
+
             }
             cliente.Stop();
 
@@ -44,6 +50,10 @@ namespace Cliente
         // metodo para serializar una instancia de mensaje a un Json para ser enviado luego
         public static string ToJson(Mensaje mensaje)
         {
+            if (mensaje.CONTENIDO == "")
+            {
+                mensaje.CONTENIDO = "ENVIO";
+            }
             string Json = JsonSerializer.Serialize(mensaje);
             return Json;
         }
@@ -53,9 +63,11 @@ namespace Cliente
         {
             string json = Json.TrimEnd('\0'); // esto para eliminar los \0 que estan al final
             // de forma similar, uso el metodo de la clase generica JsonSerializer y le indico que trabaje con tipo Mensaje
+            Console.WriteLine(json);
             Mensaje mensaje = JsonSerializer.Deserialize<Mensaje>(json);// debe existir un constructor default sin parametros para que funcione la deserializacion
             return mensaje;
         }
+
     }
 
     class Cliente
@@ -69,6 +81,9 @@ namespace Cliente
         IPEndPoint endpoint;
 
         Socket socket;
+
+
+        List<Mensaje> mensajeList = new List<Mensaje>();
 
         // el constructor es similar al del servidor
         public Cliente(string ip, int port)
@@ -96,8 +111,11 @@ namespace Cliente
             socket.Send(Encoding.ASCII.GetBytes(msg));
         }
 
-       public void RecibirMensaje()
+       public void RecibirMensaje(object manejador)
        {
+
+            ManejadorInput manejadorInput = (ManejadorInput) manejador;
+
             while (true)
             {
                 byte[] buffer = new byte[1024];
@@ -110,7 +128,8 @@ namespace Cliente
                 if (buffer.Length > 0)
                 {
                     Console.WriteLine($"{mensaje.NOMBRE}: {mensaje.CONTENIDO}");
-
+                    Console.WriteLine(manejadorInput.INPUT);
+                    //Console.SetCursorPosition(manejadorInput.INPUT.Length, Console.CursorTop);
                 }
 
                 Thread.Sleep(100);
@@ -170,6 +189,94 @@ namespace Cliente
             get { return nombre; } 
             set { nombre = value; }
         }
+    }
+
+    class ManejadorInput
+    {
+
+        string input;
+        bool enviado;
+
+        public ManejadorInput()
+        {
+            input = "";
+            enviado = false;
+        }
+
+
+        public string INPUT
+        {
+            get { return input; }
+            set { input = value; }
+        }
+
+        public bool ENVIADO
+        {
+            get { return enviado; }
+            set { enviado = value; }
+
+        }
+
+
+        // es nescesaria esta funcion ya que necesito retener lo que el usuario esta escribiendo ya que se pierde al recibir mensajes
+        public void ManejarInput()
+        {
+            INPUT = "";
+            
+
+            // la logica evita que se spamee la tecla de envio, ya que significaria demasiados envios de informacion vacia que mataria al server
+
+            while (true) {
+
+                ConsoleKeyInfo consoleKeyInfo = Console.ReadKey();
+                string l = consoleKeyInfo.KeyChar.ToString();
+                string info = consoleKeyInfo.Key.ToString();
+                //Console.WriteLine(info); //Backspace
+
+                
+                if (info == "Backspace")
+                {
+                    INPUT = INPUT.Remove(INPUT.Length - 1);
+                }
+                
+                if (info == "RightArrow" && Console.BufferWidth > Console.CursorLeft && INPUT.Length > Console.CursorLeft)
+                {
+                    Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
+                }
+
+                if (info == "LeftArrow" && Console.CursorLeft > 0)
+                {
+                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                }
+
+                if (info == "Enter" && ENVIADO == false) {
+                    ENVIADO = true;
+                    break;
+                } 
+                else if (info != "Enter" && info != "Backspace" && info != "RightArrow" && info != "LeftArrow")
+                {
+
+                   if (INPUT.Length > 0) {
+
+
+                        INPUT = INPUT.Remove(Console.CursorLeft - 1, 0).Insert(Console.CursorLeft - 1, l); // esta solucion la saque de stackOverflow, esta buena, considerarla
+                   }
+                   else
+                    {
+                        INPUT += l;
+                    }
+                   
+                   ENVIADO = false;
+                }
+                int altor = Console.CursorTop;
+                int lartor = Console.CursorLeft;    
+                Console.SetCursorPosition(0, Console.CursorTop);
+                Console.WriteLine(  INPUT + String.Concat(Enumerable.Repeat(" ", Console.BufferWidth))  );
+                Console.SetCursorPosition(lartor, altor);
+            }
+
+        }
+
     }
 
 }
