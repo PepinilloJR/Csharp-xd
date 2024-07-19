@@ -5,6 +5,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text;
 using System.Security.Cryptography;
+using System.Runtime.InteropServices;
+
 
 namespace Cliente
 {
@@ -15,12 +17,32 @@ namespace Cliente
         public static void Main(string[] args)
         {
 
+            Cliente cliente = new Cliente("192.168.100.1", 11000); ;
             ManejadorInput manejadorInput = new ManejadorInput();
-            Console.WriteLine("ingrese ip a conectarse: ");
-            string ip = Console.ReadLine();
+            while (true)
+            {
+                
+                Console.WriteLine("ingrese ip a conectarse: ");
+                string ip = Console.ReadLine();
 
-            Cliente cliente = new Cliente(ip, 11000);
-            cliente.Start();
+
+                try
+                {
+
+                    cliente = new Cliente(ip, 11000);
+                    cliente.Start();
+                    break;
+                }
+                catch (SocketException ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    Console.WriteLine("La conexion a la IP indicada no es posible, compruebe la conexion de su servidor");
+                } catch (FormatException ex) {
+                    Console.WriteLine("el formato de la direccion no es valida, debe ingresarse una IPV4");
+                }
+            }
+            
+            
 
             Thread Receptor = new Thread(cliente.RecibirMensaje);
             Receptor.Start(manejadorInput);
@@ -39,14 +61,12 @@ namespace Cliente
                     break;
                 }
 
-                
+
 
             }
             cliente.Stop();
 
         }
-
-
         // metodo para serializar una instancia de mensaje a un Json para ser enviado luego
         public static string ToJson(Mensaje mensaje)
         {
@@ -90,12 +110,12 @@ namespace Cliente
         {
             //host = Dns.GetHostEntry(ip); // la clase Dns nos provee de la informacion de la IP
             //this.ip = host.AddressList[0]; // obtenenmos la direccion IP de la entry del host que 
-                                           // indicamos
-            this.ip = IPAddress.Parse(ip);  
+            // indicamos
+            this.ip = IPAddress.Parse(ip);
             endpoint = new IPEndPoint(this.ip, port); // creamos el endpoint en la ip y puerto final
 
             socket = new Socket(this.ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // iniciamos el socket 
-            
+
         }
 
         public void Start()
@@ -111,34 +131,34 @@ namespace Cliente
             socket.Send(Encoding.ASCII.GetBytes(msg));
         }
 
-       public void RecibirMensaje(object manejador)
-       {
+        public void RecibirMensaje(object manejador)
+        {
 
-            ManejadorInput manejadorInput = (ManejadorInput) manejador;
+            ManejadorInput manejadorInput = (ManejadorInput)manejador;
 
             while (true)
             {
                 byte[] buffer = new byte[1024];
                 socket.Receive(buffer);
-               
+
                 string msg = Encoding.ASCII.GetString(buffer);
-                
+
                 Mensaje mensaje = Program.ToMensaje(msg);
 
                 if (buffer.Length > 0)
                 {
                     Console.WriteLine($"{mensaje.NOMBRE}: {mensaje.CONTENIDO}");
-                    Console.WriteLine(manejadorInput.INPUT);
-                    //Console.SetCursorPosition(manejadorInput.INPUT.Length, Console.CursorTop);
+                    //Console.WriteLine(manejadorInput.INPUT);
+                    Console.SetCursorPosition(manejadorInput.INPUT.Length + 2, Console.CursorTop);
                 }
 
                 Thread.Sleep(100);
             }
 
-       }
+        }
 
         // con este metodo cerramos la conexion
-        public void Stop() { socket.Close(); }  
+        public void Stop() { socket.Close(); }
     }
 
 
@@ -166,7 +186,8 @@ namespace Cliente
 
         }
 
-        public Mensaje(string msg, string nom) {
+        public Mensaje(string msg, string nom)
+        {
             contenido = msg;
             nombre = nom;
         }
@@ -180,13 +201,15 @@ namespace Cliente
 
         // para poder luego pasar a un JSON, deben existir propiedades, estas son las que leera el JSON
 
-        public string CONTENIDO {
+        public string CONTENIDO
+        {
             get { return contenido; }
             set { contenido = value; }
         }
 
-        public string NOMBRE { 
-            get { return nombre; } 
+        public string NOMBRE
+        {
+            get { return nombre; }
             set { nombre = value; }
         }
     }
@@ -217,66 +240,77 @@ namespace Cliente
 
         }
 
+        // enter = 13
+        // backspace 8
 
-        // es nescesaria esta funcion ya que necesito retener lo que el usuario esta escribiendo ya que se pierde al recibir mensajes
+        static int Desplazamiento = 2;
+
         public void ManejarInput()
         {
+            Console.CursorLeft = Desplazamiento;
             INPUT = "";
-            
+            while (true)
+            {
 
-            // la logica evita que se spamee la tecla de envio, ya que significaria demasiados envios de informacion vacia que mataria al server
 
-            while (true) {
-
-                ConsoleKeyInfo consoleKeyInfo = Console.ReadKey();
+                ConsoleKeyInfo consoleKeyInfo = Console.ReadKey(intercept: true); // intercept no permite que la consola 
+                                                                                  // escriba en pantalla las entradas
                 string l = consoleKeyInfo.KeyChar.ToString();
                 string info = consoleKeyInfo.Key.ToString();
-                //Console.WriteLine(info); //Backspace
 
-                
-                if (info == "Backspace")
+
+
+                if (info == "LeftArrow" & Console.CursorLeft > 2)
                 {
-                    INPUT = INPUT.Remove(INPUT.Length - 1);
+   
+                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                    //Console.Write("");
+                    //Console.SetCursorPosition(posIzqNew, Console.CursorTop);
                 }
-                
-                if (info == "RightArrow" && Console.BufferWidth > Console.CursorLeft && INPUT.Length > Console.CursorLeft)
+
+                if (info == "RightArrow" & INPUT.Length + Desplazamiento > Console.CursorLeft)
                 {
                     Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
                 }
 
-                if (info == "LeftArrow" && Console.CursorLeft > 0)
+                if (info == "Backspace" & Console.CursorLeft > 2)
                 {
+                    INPUT = INPUT.Remove(Console.CursorLeft - Desplazamiento - 1, 1);
                     Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
                 }
 
-                if (info == "Enter" && ENVIADO == false) {
+                if (info == "Enter" & ENVIADO == false)
+                {
                     ENVIADO = true;
                     break;
-                } 
-                else if (info != "Enter" && info != "Backspace" && info != "RightArrow" && info != "LeftArrow")
-                {
-
-                   if (INPUT.Length > 0) {
-
-
-                        INPUT = INPUT.Remove(Console.CursorLeft - 1, 0).Insert(Console.CursorLeft - 1, l); // esta solucion la saque de stackOverflow, esta buena, considerarla
-                   }
-                   else
-                    {
-                        INPUT += l;
-                    }
-                   
-                   ENVIADO = false;
                 }
-                int altor = Console.CursorTop;
-                int lartor = Console.CursorLeft;    
-                Console.SetCursorPosition(0, Console.CursorTop);
-                Console.WriteLine(  INPUT + String.Concat(Enumerable.Repeat(" ", Console.BufferWidth))  );
-                Console.SetCursorPosition(lartor, altor);
+
+                else if (info != "Enter")
+                {
+                    if (info != "Backspace" & info != "RightArrow" & info != "LeftArrow")
+                    {
+                        if (INPUT.Length > 0)
+                        {
+                            INPUT = INPUT.Remove(Console.CursorLeft - Desplazamiento, 0).Insert(Console.CursorLeft - Desplazamiento, l); // esta solucion la saque de stackOverflow, esta buena, considerarla
+                        }
+                        else
+                        {
+                            INPUT += l;
+                        }
+                        Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
+                    }
+                    int L = Console.CursorLeft;
+                    int T = Console.CursorTop;
+                    Console.SetCursorPosition(Desplazamiento, Console.CursorTop);
+
+                    Console.WriteLine(INPUT + String.Concat(Enumerable.Repeat(" ", Console.BufferWidth)));
+                    Console.SetCursorPosition(L, T);
+
+                    ENVIADO = false;
+                }
             }
 
         }
 
     }
-
 }

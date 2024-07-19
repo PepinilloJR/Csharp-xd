@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Linq.Expressions;
 
 
 namespace ServerTCP
@@ -129,27 +130,36 @@ namespace ServerTCP
 
             while (true)
             {
-                // podemos recibir datos entrantes con el metodo receive, los cuales guardaremos en nuestro buffer de bytes
-                // el cual luego podremos transformar en informacion legible
-                byte[] buffer = new byte[1024]; // 1024 sera la longitud del buffer, sera de 1024 bytes
-
-
-                int bytes = client.Receive(buffer);
-                // para leer el mensaje, podemos usar la clase Encoding, la clase encondig tiene propiedades que representan el tipo de codificacion
-                // y luego metodos definidos en esta propiedad, como GetString, para obtener el texto guardado en el buffer de bytes 
-                string msg = Encoding.ASCII.GetString(buffer);
-                Mensaje mensaje = Program.ToMensaje(msg);
-
-                MensajesGlobal.Add(mensaje);
-
-                Console.WriteLine($"{mensaje.NOMBRE}: {mensaje.CONTENIDO}");
-                
-
-                // si recibe cero bytes implica que se desconecto el cliente
-                if (bytes == 0)
+                try
                 {
-                     break;
+                    // podemos recibir datos entrantes con el metodo receive, los cuales guardaremos en nuestro buffer de bytes
+                    // el cual luego podremos transformar en informacion legible
+                    byte[] buffer = new byte[1024]; // 1024 sera la longitud del buffer, sera de 1024 bytes
+
+
+                    int bytes = client.Receive(buffer);
+                    // para leer el mensaje, podemos usar la clase Encoding, la clase encondig tiene propiedades que representan el tipo de codificacion
+                    // y luego metodos definidos en esta propiedad, como GetString, para obtener el texto guardado en el buffer de bytes 
+                    string msg = Encoding.ASCII.GetString(buffer);
+                    Mensaje mensaje = Program.ToMensaje(msg);
+
+                    MensajesGlobal.Add(mensaje);
+
+                    Console.WriteLine($"{mensaje.NOMBRE}: {mensaje.CONTENIDO}");
+
+
+                    // si recibe cero bytes implica que se desconecto el cliente
+                    if (bytes == 0)
+                    {
+                        break;
+                    }
+                    
+                } catch (SocketException ex)
+                {
+                    Console.WriteLine ("no se pudo recibir un mensaje de un cliente debido a su desconexion");
+                    break;
                 }
+
                 Thread.Sleep(100);
             }
 
@@ -159,6 +169,9 @@ namespace ServerTCP
 
             // finalmente cerramos este socket que creamos en este hilo, liberando los recursos y cerrando conexiones
             client.Close();
+
+            sockets.Remove(client); // eliminamos de la lista de sockets al que acabamos de cerrar
+
             Console.Write("se desconecto alguien...");
         }
 
@@ -178,7 +191,14 @@ namespace ServerTCP
 
                             Mensaje mensaje = MensajesGlobal.Last();
 
-                            Cli.Send(Encoding.ASCII.GetBytes(Program.ToJson(mensaje)));
+                            try
+                            {
+                                Cli.Send(Encoding.ASCII.GetBytes(Program.ToJson(mensaje)));
+                            }
+                            catch(SocketException ex) {
+                                Console.WriteLine("un mensaje al cliente no pudo ser enviado debido a una desconexion");
+                            }
+
                         }
                         cantidadMensajes = MensajesGlobal.Count;
                     }
