@@ -34,7 +34,7 @@ namespace ServerTCP
         // una funcion para pasar un Json en un objeto mensaje
         public static Mensaje ToMensaje(string Json)
         {
-            string json = Json.TrimEnd('\0');  // esto para eliminar los \0 que estan al final
+            string json = Json.TrimEnd('\0');  // esto para eliminar los \0 que estan al final (relleno que se agrega para completar los 1024 bytes del buffer)
 
             // de forma similar, uso el metodo de la clase generica JsonSerializer y le indico que trabaje con tipo Mensaje
             Mensaje mensaje = JsonSerializer.Deserialize<Mensaje>(json); // debe existir un constructor default sin parametros para que funcione la deserializacion
@@ -47,12 +47,15 @@ namespace ServerTCP
         // para la creacion del servidor requerimos de los objetos tipo
 
         //IPHostEntry hostEntry; // objeto para la informacion del host
+
         IPAddress ip; // clase para el protocolo IP
         IPEndPoint endPoint; // el EndPoint es el punto de conexion que utilizaremos,
                              // necesita de la ip (que obtendremos con los primeros campos) y un puerto
+
         Socket socket; // el socket del servidor
+
         Socket cliente; // socket de intercambio que se inicializara mas adelante, lo llamo cliente porque tecnicamente es toda la informacion
-                        // de los mensajes entrantes por otros clientes
+                        // de los mensajes entrantes por otros clientes y el lugar de entrega para nuestras respuestas
 
 
         public List<Mensaje> MensajesGlobal = [];  // TODO: cambiar el tipo de acceso y ver otra forma para que se comparta
@@ -78,14 +81,15 @@ namespace ServerTCP
                 Console.WriteLine(i.ToString());
             }*/
 
+
+            // utilizo la IP ingresada por el dueño del server para su servidor
             this.ip = IPAddress.Parse(ip);
             endPoint = new IPEndPoint(this.ip, puerto); // construimos el endpoint con la ip obtenida y el puerto
 
-            // al socket le pasaremos entonces tres datos, la address family que utiliza nuestro IP
-            // que puede obtenerse del IP que definimos
-
-            // luego el tipo de socket, que se obtiene de la enumeracion SocketType, en nuestro caso usaremos Stream que es el mas entendible por ahora y lo que necesitamos 
+            // al socket le pasaremos entonces tres datos, la address family que utiliza nuestro IP (posiblemente IPV4 de 32 bits)
+            // luego el tipo de socket, que se obtiene de la enumeracion SocketType, en nuestro caso usaremos Stream
             // luego, el tipo de protocolo a usar, que en nuestro caso sera TCP, tambien obtenido de una enumeracion ProtocolType
+            
             socket = new Socket(this.ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
             socket.Bind(endPoint);  // luego, el metodo Bind asocia el socket a un endPoint para que escuche en este, basicamente asociamos la IP y el Puerto
@@ -123,8 +127,6 @@ namespace ServerTCP
 
         public void ConexionCliente(Object c)
         {
-
-            //List<string> mensajes = MensajesGlobal.ToList();
 
             Socket client = (Socket)c;
 
@@ -175,33 +177,34 @@ namespace ServerTCP
             Console.Write("se desconecto alguien...");
         }
 
+
+        // funcion encargada de cada cierto tiempo actualizar los mensajes a los clientes
         public void ActualizarClientes()
         {
             int cantidadMensajes = MensajesGlobal.Count;
+
             while (true)
             {
-                if (sockets.Count > 0)
+                if (cantidadMensajes < MensajesGlobal.Count & sockets.Count > 0)
                 {
-                    if (cantidadMensajes < MensajesGlobal.Count)
+                    foreach (Socket Cli in sockets)
                     {
-                        foreach (Socket Cli in sockets)
+
+                        // esto es temporal
+
+                        Mensaje mensaje = MensajesGlobal.Last();
+
+                        try
                         {
-
-                            // esto es temporal
-
-                            Mensaje mensaje = MensajesGlobal.Last();
-
-                            try
-                            {
-                                Cli.Send(Encoding.ASCII.GetBytes(Program.ToJson(mensaje)));
-                            }
-                            catch(SocketException ex) {
-                                Console.WriteLine("un mensaje al cliente no pudo ser enviado debido a una desconexion");
-                            }
-
+                            Cli.Send(Encoding.ASCII.GetBytes(Program.ToJson(mensaje)));
                         }
-                        cantidadMensajes = MensajesGlobal.Count;
+                        catch (SocketException ex)
+                        {
+                            Console.WriteLine("un mensaje al cliente no pudo ser enviado debido a una desconexion");
+                        }
+
                     }
+                    cantidadMensajes = MensajesGlobal.Count;
                 }
                 // nescesario frenar un rato el thread, unos milisegundos porque si no se muere el thread por que satura al cpu o algo asi no se
                 Thread.Sleep(100);

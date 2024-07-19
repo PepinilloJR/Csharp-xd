@@ -13,7 +13,7 @@ namespace Cliente
 
     class Program
     {
-
+        // logica principal
         public static void Main(string[] args)
         {
 
@@ -67,6 +67,15 @@ namespace Cliente
             cliente.Stop();
 
         }
+
+
+
+        // serializacion --- para poder enviar objetos a travez del socket, o para otras actividades, es util serializarlos
+
+        // en nuestro caso usaremos serializacion JSON lo que convertira un objeto en un string con el formato JSON para que podamos luego
+        // deserializarlo y usarlo como objeto desde el server tanto como en el cliente
+
+
         // metodo para serializar una instancia de mensaje a un Json para ser enviado luego
         public static string ToJson(Mensaje mensaje)
         {
@@ -90,6 +99,15 @@ namespace Cliente
 
     }
 
+
+    class Usuario
+    {
+        public Usuario()
+        {
+
+        }
+    }
+
     class Cliente
     {
         // de forma similar al server, necesitamos una Ip y un puerto, un endpoint 
@@ -108,9 +126,6 @@ namespace Cliente
         // el constructor es similar al del servidor
         public Cliente(string ip, int port)
         {
-            //host = Dns.GetHostEntry(ip); // la clase Dns nos provee de la informacion de la IP
-            //this.ip = host.AddressList[0]; // obtenenmos la direccion IP de la entry del host que 
-            // indicamos
             this.ip = IPAddress.Parse(ip);
             endpoint = new IPEndPoint(this.ip, port); // creamos el endpoint en la ip y puerto final
 
@@ -118,12 +133,15 @@ namespace Cliente
 
         }
 
+
+        // funcion encargada de establecer la conexion con el endpoint definido para el cliente
         public void Start()
         {
             socket.Connect(endpoint); // en este caso, el socket se conecta al endpoint remoto que mencionamos
                                       // en vez de asociar al socket a un endpoint local como haciamos con bind
         }
 
+        // funcion encargada de enviar el mensaje al servidor
         public void EnviarMensaje(string msg)
         {
             // de forma similar, usamos la clase Encoding para transformar el Json en
@@ -131,6 +149,8 @@ namespace Cliente
             socket.Send(Encoding.ASCII.GetBytes(msg));
         }
 
+
+        // funcion encargada de recibir mensajes del servidor
         public void RecibirMensaje(object manejador)
         {
 
@@ -160,16 +180,6 @@ namespace Cliente
         // con este metodo cerramos la conexion
         public void Stop() { socket.Close(); }
     }
-
-
-
-    // serializacion --- para poder enviar objetos a travez del socket, o para otras actividades, es util serializarlos
-
-    // en nuestro caso usaremos serializacion JSON lo que convertira un objeto en un string con el formato JSON para que podamos luego
-    // deserializarlo y usarlo como objeto desde el server tanto como en el cliente
-
-
-    // marcamos la clase Mensaje como serializable
 
 
     class Mensaje
@@ -214,6 +224,9 @@ namespace Cliente
         }
     }
 
+
+    // clase encargada de manejar todo el input del usuario, es nescesaria ya que necesito retener lo que esta ingresando el usuario
+    // en medio de una conversacion
     class ManejadorInput
     {
 
@@ -240,9 +253,6 @@ namespace Cliente
 
         }
 
-        // enter = 13
-        // backspace 8
-
         static int Desplazamiento = 2;
 
         public void ManejarInput()
@@ -262,10 +272,7 @@ namespace Cliente
 
                 if (info == "LeftArrow" & Console.CursorLeft > 2)
                 {
-   
                     Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-                    //Console.Write("");
-                    //Console.SetCursorPosition(posIzqNew, Console.CursorTop);
                 }
 
                 if (info == "RightArrow" & INPUT.Length + Desplazamiento > Console.CursorLeft)
