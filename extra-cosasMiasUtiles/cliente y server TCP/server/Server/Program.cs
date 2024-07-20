@@ -116,7 +116,7 @@ namespace ServerTCP
                 // sera el que se encarga del intercambio de datos entre este y el servidor
                 cliente = socket.Accept();
                 sockets.Add(cliente);
-                Console.Write("se conecto alguien...");
+                Console.WriteLine("se conecto alguien...");
                 hilosCliente.Add(new Thread(ConexionCliente));
                 hilosCliente.Last().Start(cliente);
                 
@@ -147,8 +147,9 @@ namespace ServerTCP
 
                     MensajesGlobal.Add(mensaje);
 
-                    Console.WriteLine($"{mensaje.NOMBRE}: {mensaje.CONTENIDO}");
-
+                    Console.ForegroundColor = mensaje.USUARIO.COLOR;
+                    Console.WriteLine($"{mensaje.USUARIO.NOMBRE}: {mensaje.CONTENIDO}");
+                    Console.ForegroundColor = ConsoleColor.White;
 
                     // si recibe cero bytes implica que se desconecto el cliente
                     if (bytes == 0)
@@ -174,7 +175,7 @@ namespace ServerTCP
 
             sockets.Remove(client); // eliminamos de la lista de sockets al que acabamos de cerrar
 
-            Console.Write("se desconecto alguien...");
+            Console.WriteLine("se desconecto alguien...");
         }
 
 
@@ -217,12 +218,39 @@ namespace ServerTCP
     }
 
 
+    class Usuario
+    {
+        string nombre;
+
+        ConsoleColor color;
+
+
+        public Usuario(string nombre, ConsoleColor color)
+        {
+            this.color = color;
+            this.nombre = nombre;
+        }
+
+        public string NOMBRE
+        {
+            get { return nombre; }
+            set { nombre = value; }
+        }
+
+        public ConsoleColor COLOR
+        {
+            get { return color; }
+            set { color = value; }
+        }
+    }
+
+
     class Mensaje
     {
 
         string contenido;
 
-        string nombre;
+        Usuario usuario;
 
         // el constructor por defecto es obligatorio para que la serializacion funcione
         // da igual si no hace nada, pero es obligatorio un constructor default sin parametro alguno
@@ -231,10 +259,10 @@ namespace ServerTCP
 
         }
 
-        public Mensaje(string msg, string nom)
+        public Mensaje(string msg, Usuario user)
         {
             contenido = msg;
-            nombre = nom;
+            usuario = user;
         }
 
         //
@@ -252,10 +280,10 @@ namespace ServerTCP
             set { contenido = value; }
         }
 
-        public string NOMBRE
+        public Usuario USUARIO
         {
-            get { return nombre; }
-            set { nombre = value; }
+            get { return usuario; }
+            set { usuario = value; }
         }
     }
 

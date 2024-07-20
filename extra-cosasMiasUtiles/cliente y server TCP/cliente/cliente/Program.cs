@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using System.Text;
 using System.Security.Cryptography;
 using System.Runtime.InteropServices;
+using System.Drawing;
 
 
 namespace Cliente
@@ -17,23 +18,21 @@ namespace Cliente
         public static void Main(string[] args)
         {
 
+            Usuario usuario = CrearUsuario();
+
             Cliente cliente = new Cliente("192.168.100.1", 11000); ;
             ManejadorInput manejadorInput = new ManejadorInput();
             while (true)
             {
-                
                 Console.WriteLine("ingrese ip a conectarse: ");
                 string ip = Console.ReadLine();
 
-
                 try
                 {
-
                     cliente = new Cliente(ip, 11000);
                     cliente.Start();
                     break;
-                }
-                catch (SocketException ex)
+                } catch (SocketException ex)
                 {
                     Console.WriteLine(ex.ToString());
                     Console.WriteLine("La conexion a la IP indicada no es posible, compruebe la conexion de su servidor");
@@ -49,20 +48,13 @@ namespace Cliente
             Console.WriteLine("conexion exitosa, puede escribir y tocar enter para enviar un mensaje...");
             while (true)
             {
-
-                //string texto = Console.ReadLine();
-
                 manejadorInput.ManejarInput();
-                Mensaje mensaje = new Mensaje(manejadorInput.INPUT, "usuario");
-                //Console.WriteLine(mensaje.CONTENIDO);
+                Mensaje mensaje = new Mensaje(manejadorInput.INPUT, usuario);
                 cliente.EnviarMensaje(ToJson(mensaje));
                 if (mensaje.CONTENIDO == "/quit")
                 {
                     break;
                 }
-
-
-
             }
             cliente.Stop();
 
@@ -92,19 +84,63 @@ namespace Cliente
         {
             string json = Json.TrimEnd('\0'); // esto para eliminar los \0 que estan al final
             // de forma similar, uso el metodo de la clase generica JsonSerializer y le indico que trabaje con tipo Mensaje
-            Console.WriteLine(json);
             Mensaje mensaje = JsonSerializer.Deserialize<Mensaje>(json);// debe existir un constructor default sin parametros para que funcione la deserializacion
             return mensaje;
         }
 
+    
+        public static Usuario CrearUsuario()
+        {
+            string nom;
+            ConsoleColor color;
+
+            while (true)
+            {
+                Console.WriteLine("Ingresa el nombre del usuario: ");
+                nom = Console.ReadLine();
+                if (nom.Length > 0)
+                {
+                    break;
+                } else
+                {
+                    Console.WriteLine("el nombre no puede ser vacio...");
+                }
+            }
+            ConsoleColor[] colores;
+            colores = (ConsoleColor[])Enum.GetValues(typeof(ConsoleColor));
+            Random random = new Random();   
+            int posColor = random.Next(0, colores.Length);
+            color = colores[posColor];
+
+            return new Usuario(nom, color);
+        }
+    
     }
 
 
     class Usuario
     {
-        public Usuario()
-        {
+        string nombre;
 
+        ConsoleColor color;
+
+
+        public Usuario(string nombre, ConsoleColor color)
+        {
+            this.color = color;
+            this.nombre = nombre;
+        }
+
+        public string NOMBRE
+        {
+            get { return nombre; }
+            set { nombre = value; } 
+        }
+
+        public ConsoleColor COLOR
+        {
+            get { return color; }
+            set { color = value; }  
         }
     }
 
@@ -167,9 +203,14 @@ namespace Cliente
 
                 if (buffer.Length > 0)
                 {
-                    Console.WriteLine($"{mensaje.NOMBRE}: {mensaje.CONTENIDO}");
+                    Console.ForegroundColor = mensaje.USUARIO.COLOR;
+                    Console.SetCursorPosition(2, Console.CursorTop);
+
+                    Console.WriteLine($"{mensaje.USUARIO.NOMBRE}: {mensaje.CONTENIDO}" + String.Concat(Enumerable.Repeat(" ", Console.BufferWidth)));
+                    Console.ForegroundColor = ConsoleColor.White;
                     //Console.WriteLine(manejadorInput.INPUT);
                     Console.SetCursorPosition(manejadorInput.INPUT.Length + 2, Console.CursorTop);
+                    manejadorInput.RecuperarMensaje();
                 }
 
                 Thread.Sleep(100);
@@ -187,7 +228,7 @@ namespace Cliente
 
         string contenido;
 
-        string nombre;
+        Usuario usuario;
 
         // el constructor por defecto es obligatorio para que la desserializacion funcione
         // da igual si no hace nada, pero es obligatorio un constructor default sin parametro alguno
@@ -196,10 +237,10 @@ namespace Cliente
 
         }
 
-        public Mensaje(string msg, string nom)
+        public Mensaje(string msg, Usuario user)
         {
             contenido = msg;
-            nombre = nom;
+            usuario = user;
         }
 
         //
@@ -217,10 +258,10 @@ namespace Cliente
             set { contenido = value; }
         }
 
-        public string NOMBRE
+        public Usuario USUARIO
         {
-            get { return nombre; }
-            set { nombre = value; }
+            get { return usuario; }
+            set { usuario = value; }
         }
     }
 
@@ -306,17 +347,31 @@ namespace Cliente
                         }
                         Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
                     }
+
+                    RecuperarMensaje();
+                    /*
                     int L = Console.CursorLeft;
                     int T = Console.CursorTop;
                     Console.SetCursorPosition(Desplazamiento, Console.CursorTop);
 
                     Console.WriteLine(INPUT + String.Concat(Enumerable.Repeat(" ", Console.BufferWidth)));
                     Console.SetCursorPosition(L, T);
+                    */
 
                     ENVIADO = false;
                 }
             }
 
+        }
+
+        public void RecuperarMensaje()
+        {
+            int L = Console.CursorLeft;
+            int T = Console.CursorTop;
+            Console.SetCursorPosition(Desplazamiento, Console.CursorTop);
+
+            Console.WriteLine(INPUT + String.Concat(Enumerable.Repeat(" ", Console.BufferWidth)));
+            Console.SetCursorPosition(L, T);
         }
 
     }
