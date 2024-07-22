@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "hilo3- completacion de tareas/1.0.0": {
+        "runtime": {
+          "hilo3- completacion de tareas.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "hilo3- completacion de tareas/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

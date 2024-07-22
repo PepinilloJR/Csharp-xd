@@ -1,0 +1,15 @@
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\bin\Debug\net8.0\hilos4- IMPORTANTE pools de hilos.exe
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\bin\Debug\net8.0\hilos4- IMPORTANTE pools de hilos.deps.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\bin\Debug\net8.0\hilos4- IMPORTANTE pools de hilos.runtimeconfig.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\bin\Debug\net8.0\hilos4- IMPORTANTE pools de hilos.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\bin\Debug\net8.0\hilos4- IMPORTANTE pools de hilos.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\obj\Debug\net8.0\hilos4- IMPORTANTE pools de hilos.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\obj\Debug\net8.0\hilos4- IMPORTANTE pools de hilos.AssemblyInfoInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\obj\Debug\net8.0\hilos4- IMPORTANTE pools de hilos.AssemblyInfo.cs
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\obj\Debug\net8.0\hilos4- IMPORTANTE pools de hilos.csproj.CoreCompileInputs.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\obj\Debug\net8.0\hilos4- IMPORTANTE pools de hilos.sourcelink.json
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\obj\Debug\net8.0\hilos4- IMPORTANTE pools de hilos.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\obj\Debug\net8.0\refint\hilos4- IMPORTANTE pools de hilos.dll
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\obj\Debug\net8.0\hilos4- IMPORTANTE pools de hilos.pdb
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\obj\Debug\net8.0\hilos4- IMPORTANTE pools de hilos.genruntimeconfig.cache
+C:\Users\pepin\OneDrive\Escritorio\proyectos en .NET\19-Hilos\hilos4- IMPORTANTE pools de hilos\obj\Debug\net8.0\ref\hilos4- IMPORTANTE pools de hilos.dll
