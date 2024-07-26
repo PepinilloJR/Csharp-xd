@@ -95,7 +95,7 @@ namespace ServerTCP
             socket.Bind(endPoint);  // luego, el metodo Bind asocia el socket a un endPoint para que escuche en este, basicamente asociamos la IP y el Puerto
                                     // al socket para que sepa donde recibir y enviar datos
 
-            socket.Listen(10); // el socket se pone en modo escucha, el socket escuchara tantas conexiones indicadas
+            socket.Listen(10); // el socket se pone en modo escucha, el socket escuchara tantas conexiones indicadas al mismo tiempo
             sockets = new List<Socket>();
         }
 
