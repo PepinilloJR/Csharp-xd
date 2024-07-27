@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace juegoOnlineBasico
@@ -19,7 +20,7 @@ namespace juegoOnlineBasico
 
         List<Socket> clientes = new List<Socket>();
 
-        List<string> datosJugadores = new List<string>();   
+        Dictionary<int,Jugador> datosJugadores = new Dictionary<int, Jugador>();   
 
         public Server(string ip, int port)
         {
@@ -63,11 +64,29 @@ namespace juegoOnlineBasico
         {
             while (true)
             {
-                byte[] buffer = new byte[1024]; 
+                byte[] buffer = new byte[2048]; 
 
                 await cliente.ReceiveAsync(buffer);
 
-                Console.WriteLine("recibi un dato");
+                string mensaje = Encoding.ASCII.GetString(buffer);
+                string json = mensaje.TrimEnd('\0');
+
+
+                Jugador jugador = JsonSerializer.Deserialize<Jugador>(json);
+
+                if (datosJugadores.ContainsKey(jugador.ID))
+                {
+                    datosJugadores[jugador.ID] = jugador;
+                    Console.WriteLine(jugador.ID);
+                }
+                else
+                {
+                    datosJugadores.Add(jugador.ID, jugador);
+                    Console.WriteLine(jugador.ID);
+                }
+                  
+                //Console.WriteLine("jugador actualizado");
+                //Console.WriteLine(json);
 
             }
         }
@@ -76,10 +95,12 @@ namespace juegoOnlineBasico
         {
             while (true)
             {
-                await Task.Delay(100);
+                await Task.Delay(50);
                 Parallel.ForEach(clientes.ToArray(), (Socket cliente) =>
                 {
-                    cliente.Send(Encoding.ASCII.GetBytes("hola soy raro wow"));
+                    string json = JsonSerializer.Serialize(datosJugadores);
+                    //await socket.SendAsync(Encoding.ASCII.GetBytes(json));
+                    cliente.Send(Encoding.ASCII.GetBytes(json));
                 });
             }
         }

@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Text.Json;
 using juegoOnlineBasico;
 
 namespace Principal
@@ -12,8 +12,11 @@ namespace Principal
         {
             Console.CursorVisible = false;
             Console.SetWindowSize(100, 50);
-            Console.SetBufferSize(100, 50);
+            //Console.SetBufferSize(100, 50);
+
             Menu menu = new Menu(">>>");
+
+
 
             while (true)
             {
@@ -46,10 +49,15 @@ namespace Principal
                     {
                         Console.Clear();
                         //Console.WriteLine("Unirse a partida!!!");
-                        Jugador jugador = new Jugador(20,20);
-                        Cliente cliente = new Cliente("26.34.159.22", 27015, jugador);
+                        Random rnd = new Random();
+                        int iD = rnd.Next(0, 1000);
+                        Jugador jugador = new Jugador(20,20, iD);
+
+                        Dictionary<int, Jugador> jugadores = new Dictionary<int, Jugador>();
+
+                        Cliente cliente = new Cliente("26.34.159.22", 27015, jugador, jugadores);
                         Task.Run(cliente.Iniciar);  
-                        LogicaJuegoC(jugador);
+                        LogicaJuegoC(jugador, jugadores);
 
                     }
                     
@@ -62,39 +70,76 @@ namespace Principal
         }
 
 
-        public static void LogicaJuegoC(Jugador jugador)
+        public static void LogicaJuegoC(Jugador jugador, Dictionary<int, Jugador> jugadores)
         {
             int bPosX = jugador.POSX;
             int bPosY = jugador.POSY;
+            Entrada entrada = new Entrada();
+            Task.Run(() =>
+            {
+               LeerEntrada(entrada);
+            });
 
             while (true) {
                 bPosX = jugador.POSX;
                 bPosY = jugador.POSY;
-                string tecla = Console.ReadKey(intercept: true).Key.ToString();
-                if ( tecla == "LeftArrow")
+                //entrada.tecla = Console.ReadKey(intercept: true).Key.ToString();
+                if (entrada.tecla == "LeftArrow")
                 {
                     jugador.POSX -= 1;
+                    entrada.tecla = "";
                 }
-                else if (tecla == "RightArrow")
+                else if (entrada.tecla == "RightArrow")
                 {
                     jugador.POSX += 1;
+                    entrada.tecla = "";
                 }
-                else if (tecla == "UpArrow")
+                else if (entrada.tecla == "UpArrow")
                 {
                     jugador.POSY -= 1;
+                    entrada.tecla = "";
                 }
-                else if (tecla == "DownArrow")
+                else if (entrada.tecla == "DownArrow")
                 {
                     jugador.POSY += 1;
+                    entrada.tecla = "";
                 }
-                jugador.Borrar(bPosX, bPosY);
-                jugador.Dibujar();
+
+                if (bPosX != jugador.POSX || bPosY != jugador.POSY)
+                {
+                    jugador.Borrar(bPosX, bPosY);
+                    jugador.Dibujar();
+                }
+
+
+                foreach (KeyValuePair<int, Jugador> par in jugadores.ToArray()) // el ToArray() es porque la lista de jugadores se pude modificar en pleto forEach, entonces tengo que usar un array temporal
+                                                                                 // para evitar este error 
+                {
+                    if (par.Key != jugador.ID)
+                    {
+                        par.Value.Dibujar();
+
+                    }
+
+                }
+                Console.CursorLeft = 5;
+                Console.CursorTop = 20;
+                Console.Write(JsonSerializer.Serialize(jugadores) + "||||");
+                
+                
 
 
             }
         }
 
-
+        static void LeerEntrada(Entrada ent)
+        {
+            while (true)
+            {
+                ent.tecla = Console.ReadKey(intercept: true).Key.ToString();
+               // Task.Delay(50);
+            }
+        }
 
     }
 
@@ -164,6 +209,7 @@ namespace Principal
     {
         int posX;
         int posY;
+        int id;
 
         string spriteCabeza = "  []";
         string spriteCuerpo = "-([])-";
@@ -172,27 +218,30 @@ namespace Principal
 
         public int POSY { get {  return posY; } set { posY = value; } } 
 
-        public string SPRITEC { get { return spriteCabeza; } set { spriteCabeza = value; } }
-        public string SPRITECU { get { return spriteCuerpo; } set { spriteCuerpo = value; } }
+        public int ID { get { return id; } set { id = value; } }
+        
+
+        //public string SPRITEC { get { return spriteCabeza; } set { spriteCabeza = value; } }
+        //public string SPRITECU { get { return spriteCuerpo; } set { spriteCuerpo = value; } }
 
 
-        public Jugador(int posX, int posY) {
+        public Jugador(int posX, int posY, int id) {
             this.posX = posX ;
             this.posY = posY;
-            
+            this.id = id;
         }
 
         public void Dibujar()
-        {
+        { 
             Console.CursorLeft = posX;
             Console.CursorTop = posY;
 
-            Console.Write(SPRITEC);
-
+            Console.Write(spriteCabeza);                
             Console.CursorLeft = posX;
             Console.CursorTop = posY + 1;
 
-            Console.Write(SPRITECU);
+            Console.Write(spriteCuerpo);
+
         }
 
         public void Borrar(int AposX, int AposY)
@@ -210,4 +259,10 @@ namespace Principal
 
     }
 
+
+    class Entrada
+    {
+        public string tecla;
+
+    }
 }
