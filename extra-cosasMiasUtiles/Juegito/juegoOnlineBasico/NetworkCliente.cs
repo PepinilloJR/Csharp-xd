@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Principal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -16,8 +17,11 @@ namespace juegoOnlineBasico
 
         Socket socket;
 
+        Jugador jugador;
 
-        public Cliente(string ip, int port) { 
+        public Cliente(string ip, int port, Jugador jugador) { 
+        
+            this.jugador = jugador; 
             iP = IPAddress.Parse(ip);
             iPendpoint = new IPEndPoint(iP, port);
         
@@ -39,6 +43,15 @@ namespace juegoOnlineBasico
         }
 
 
+        async Task Sender()
+        {
+            while (true)
+            {
+
+            }
+        }
+
+
         async Task Receiver()
         {
             while (true)
@@ -47,7 +60,7 @@ namespace juegoOnlineBasico
                 byte[] buffer = new byte[1024]; 
                 await socket.ReceiveAsync(buffer);
 
-                Console.WriteLine(Encoding.ASCII.GetString(buffer));
+                //Console.WriteLine(Encoding.ASCII.GetString(buffer));
             
             
             }

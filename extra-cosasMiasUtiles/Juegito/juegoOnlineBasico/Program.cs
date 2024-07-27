@@ -10,7 +10,7 @@ namespace Principal
 
         static void Main(string[] args)
         {
-
+            Console.CursorVisible = false;
             Console.SetWindowSize(100, 50);
             Console.SetBufferSize(100, 50);
             Menu menu = new Menu(">>>");
@@ -27,17 +27,17 @@ namespace Principal
                 {
                     menu.posCURSOR -= 5;
                 }
-                if (key == "DownArrow" & menu.posCURSOR < (Console.WindowTop / 2) + 10)
+                else if (key == "DownArrow" & menu.posCURSOR < (Console.WindowTop / 2) + 10)
                 {
                     menu.posCURSOR += 5;
                 }
 
-                if (key == "Enter")
+                else if (key == "Enter")
                 {
                     if (menu.posCURSOR == (Console.WindowTop / 2) + 5)
                     {
                         Console.Clear();
-                        Console.WriteLine("Crear partida!!!");
+                        //Console.WriteLine("Crear partida!!!");
 
                         Server server = new Server("26.34.159.22", 27015);
                         server.Iniciar();
@@ -45,10 +45,12 @@ namespace Principal
                     else if (menu.posCURSOR == (Console.WindowTop / 2) + 10)
                     {
                         Console.Clear();
-                        Console.WriteLine("Unirse a partida!!!");
+                        //Console.WriteLine("Unirse a partida!!!");
+                        Jugador jugador = new Jugador(20,20);
+                        Cliente cliente = new Cliente("26.34.159.22", 27015, jugador);
+                        Task.Run(cliente.Iniciar);  
+                        LogicaJuegoC(jugador);
 
-                        Cliente cliente = new Cliente("26.34.159.22", 27015);
-                        cliente.Iniciar();  
                     }
                     
                 }
@@ -58,6 +60,42 @@ namespace Principal
 
 
         }
+
+
+        public static void LogicaJuegoC(Jugador jugador)
+        {
+            int bPosX = jugador.POSX;
+            int bPosY = jugador.POSY;
+
+            while (true) {
+                bPosX = jugador.POSX;
+                bPosY = jugador.POSY;
+                string tecla = Console.ReadKey(intercept: true).Key.ToString();
+                if ( tecla == "LeftArrow")
+                {
+                    jugador.POSX -= 1;
+                }
+                else if (tecla == "RightArrow")
+                {
+                    jugador.POSX += 1;
+                }
+                else if (tecla == "UpArrow")
+                {
+                    jugador.POSY -= 1;
+                }
+                else if (tecla == "DownArrow")
+                {
+                    jugador.POSY += 1;
+                }
+                jugador.Borrar(bPosX, bPosY);
+                jugador.Dibujar();
+
+
+            }
+        }
+
+
+
     }
 
 
@@ -122,6 +160,54 @@ namespace Principal
     }
 
 
+    class Jugador
+    {
+        int posX;
+        int posY;
 
+        string spriteCabeza = "  []";
+        string spriteCuerpo = "-([])-";
+
+        public int POSX { get { return posX; } set { posX = value; } }
+
+        public int POSY { get {  return posY; } set { posY = value; } } 
+
+        public string SPRITEC { get { return spriteCabeza; } set { spriteCabeza = value; } }
+        public string SPRITECU { get { return spriteCuerpo; } set { spriteCuerpo = value; } }
+
+
+        public Jugador(int posX, int posY) {
+            this.posX = posX ;
+            this.posY = posY;
+            
+        }
+
+        public void Dibujar()
+        {
+            Console.CursorLeft = posX;
+            Console.CursorTop = posY;
+
+            Console.Write(SPRITEC);
+
+            Console.CursorLeft = posX;
+            Console.CursorTop = posY + 1;
+
+            Console.Write(SPRITECU);
+        }
+
+        public void Borrar(int AposX, int AposY)
+        {
+            Console.CursorLeft = AposX;
+            Console.CursorTop = AposY;
+                          
+            Console.Write("    ");
+
+            Console.CursorLeft = AposX;
+            Console.CursorTop = AposY + 1;
+
+            Console.Write("       ");
+        }
+
+    }
 
 }
