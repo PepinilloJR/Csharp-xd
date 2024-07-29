@@ -5,13 +5,16 @@ using juegoOnlineBasico;
 namespace Principal
 {
 
+    //TODO: asegurarse de crear locks, para el dibujado general, y para la modificacion de las listas que se comparten entre modulos, para
+    // ello crear funciones lockeadas para la modificacion de las bibliotecas, y crear funciones lockeadas para el posicionamiento del cursor
+
     class Program
     {
 
         static void Main(string[] args)
         {
             Console.CursorVisible = false;
-            Console.SetWindowSize(100, 50);
+           // Console.SetWindowSize(100, 50);
             //Console.SetBufferSize(100, 50);
 
             Menu menu = new Menu(">>>");
@@ -42,7 +45,7 @@ namespace Principal
                         Console.Clear();
                         //Console.WriteLine("Crear partida!!!");
 
-                        Server server = new Server("26.34.159.22", 27015);
+                        Server server = new Server("26.111.95.207", 27015);
                         server.Iniciar();
                     }
                     else if (menu.posCURSOR == (Console.WindowTop / 2) + 10)
@@ -54,10 +57,11 @@ namespace Principal
                         Jugador jugador = new Jugador(20,20, iD);
 
                         Dictionary<int, Jugador> jugadores = new Dictionary<int, Jugador>();
+                        Dictionary<int, Jugador> jugadoresT = new Dictionary<int, Jugador>(); // una lista para recordar el estado anterior de recibir un nuevo mensaje con los datos de los jugadores
 
-                        Cliente cliente = new Cliente("26.34.159.22", 27015, jugador, jugadores);
+                        Cliente cliente = new Cliente("26.111.95.207", 27015, jugador, jugadores, jugadoresT);
                         Task.Run(cliente.Iniciar);  
-                        LogicaJuegoC(jugador, jugadores);
+                        LogicaJuegoC(jugador, jugadores, jugadoresT);
 
                     }
                     
@@ -70,7 +74,7 @@ namespace Principal
         }
 
 
-        public static void LogicaJuegoC(Jugador jugador, Dictionary<int, Jugador> jugadores)
+        public static void LogicaJuegoC(Jugador jugador, Dictionary<int, Jugador> jugadores, Dictionary<int, Jugador> jugadoresT)
         {
             int bPosX = jugador.POSX;
             int bPosY = jugador.POSY;
@@ -88,49 +92,61 @@ namespace Principal
                 {
                     jugador.POSX -= 1;
                     entrada.tecla = "";
+
                 }
                 else if (entrada.tecla == "RightArrow")
                 {
                     jugador.POSX += 1;
                     entrada.tecla = "";
+
                 }
                 else if (entrada.tecla == "UpArrow")
                 {
                     jugador.POSY -= 1;
                     entrada.tecla = "";
+
                 }
                 else if (entrada.tecla == "DownArrow")
                 {
                     jugador.POSY += 1;
                     entrada.tecla = "";
+
                 }
 
                 if (bPosX != jugador.POSX || bPosY != jugador.POSY)
                 {
+
                     jugador.Borrar(bPosX, bPosY);
                     jugador.Dibujar();
                 }
 
+                // aca no deberia hacer falta porque no se modifica el coso, pero hay que ir viendo
 
                 foreach (KeyValuePair<int, Jugador> par in jugadores.ToArray()) // el ToArray() es porque la lista de jugadores se pude modificar en pleto forEach, entonces tengo que usar un array temporal
                                                                                  // para evitar este error 
                 {
                     if (par.Key != jugador.ID)
                     {
-                        par.Value.Dibujar();
+                        if (jugadoresT[par.Key].POSX != par.Value.POSX || jugadoresT[par.Key].POSY != par.Value.POSY)
+                        {
+                            par.Value.Borrar(jugadoresT[par.Key].POSX, jugadoresT[par.Key].POSY);
+                            par.Value.Dibujar();
+                        }
 
                     }
 
                 }
                 Console.CursorLeft = 5;
                 Console.CursorTop = 20;
-                Console.Write(JsonSerializer.Serialize(jugadores) + "||||");
+                Console.Write(JsonSerializer.Serialize(jugadores.ToDictionary()) + "||||");
                 
                 
 
 
             }
         }
+
+
 
         static void LeerEntrada(Entrada ent)
         {
@@ -232,7 +248,8 @@ namespace Principal
         }
 
         public void Dibujar()
-        { 
+        {
+
             Console.CursorLeft = posX;
             Console.CursorTop = posY;
 
@@ -244,15 +261,15 @@ namespace Principal
 
         }
 
-        public void Borrar(int AposX, int AposY)
+        public void Borrar(int bPosX, int bPosY)
         {
-            Console.CursorLeft = AposX;
-            Console.CursorTop = AposY;
+            Console.CursorLeft = bPosX;
+            Console.CursorTop = bPosY;
                           
             Console.Write("    ");
 
-            Console.CursorLeft = AposX;
-            Console.CursorTop = AposY + 1;
+            Console.CursorLeft = bPosX;
+            Console.CursorTop = bPosY + 1;
 
             Console.Write("       ");
         }
