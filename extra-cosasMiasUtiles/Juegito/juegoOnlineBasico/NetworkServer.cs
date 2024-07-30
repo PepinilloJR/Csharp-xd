@@ -66,45 +66,50 @@ namespace juegoOnlineBasico
             {
                 byte[] buffer = new byte[2048];
 
-                try
-                {
-                    await cliente.ReceiveAsync(buffer);
-                } catch (Exception ex)
-                {
-                    Console.WriteLine("al recibir: " + ex.ToString());
-                }
+                await cliente.ReceiveAsync(buffer);
+
                 string mensaje = Encoding.ASCII.GetString(buffer);
                 string json = mensaje.TrimEnd('\0');
+                try
+                {
+                   
 
-                Jugador jugador = JsonSerializer.Deserialize<Jugador>(json);
+                    Jugador jugador = JsonSerializer.Deserialize<Jugador>(json);
 
                 // intenta lockear esta parte de abajo, en una funcion encargada de modificar ese dato, podria ser ese el problema
 
-                if (datosJugadores.ContainsKey(jugador.ID))
-                {
-                    datosJugadores[jugador.ID] = jugador;
-                   // Console.WriteLine(jugador.ID);
-                }
-                else
-                {
-                    datosJugadores.Add(jugador.ID, jugador);
-                   // Console.WriteLine(jugador.ID);
-                }
-                  
-                //Console.WriteLine("jugador actualizado");
-                //Console.WriteLine(json);
+                    if (datosJugadores.ContainsKey(jugador.ID))
+                    {
+                        datosJugadores[jugador.ID] = jugador;
+                       // Console.WriteLine(jugador.ID);
+                    }
+                    else
+                    {
+                        datosJugadores.Add(jugador.ID, jugador);
+                       // Console.WriteLine(jugador.ID);
+                    }
 
+                    //Console.WriteLine("jugador actualizado");
+                    //Console.WriteLine(json);
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("al recibir: " + ex.ToString());
+                    Console.WriteLine(json);
+                    continue;
+                }
             }
+
         }
 
         async Task Sender()
         {
             while (true)
             {
-                await Task.Delay(10);
+                await Task.Delay(50);
                 foreach (Socket cliente in clientes.ToArray())
                 {
-                    await Task.Delay(10);
                     try
                     {
                         Dictionary<int, Jugador> datosParaPasar = datosJugadores.ToDictionary();
@@ -122,4 +127,15 @@ namespace juegoOnlineBasico
             }
         }
     }
+
+    class Mensaje
+    {
+
+    }
+
+
+
 }
+
+
+

@@ -1,12 +1,8 @@
 ﻿using Principal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace juegoOnlineBasico
 {
@@ -23,13 +19,17 @@ namespace juegoOnlineBasico
         Dictionary<int, Jugador> jugadores;
         Dictionary<int, Jugador> jugadoresT;
 
-        public Cliente(string ip, int port, Jugador jugador, Dictionary<int, Jugador> jugadores, Dictionary<int, Jugador> jugadoresT) { 
+        List<Bala> balas;
+        List<Bala> balasT;
+
+        public Cliente(string ip, int port, Jugador jugador, Dictionary<int, Jugador> jugadores, Dictionary<int, Jugador> jugadoresT, List<Bala> balas) { 
         
             this.jugador = jugador; 
             iP = IPAddress.Parse(ip);
             iPendpoint = new IPEndPoint(iP, port);
             this.jugadores = jugadores;
             this.jugadoresT = jugadoresT;
+            this.balas = balas;
             socket = new Socket(iP.AddressFamily,SocketType.Stream, ProtocolType.Tcp);
         }
 
@@ -54,10 +54,20 @@ namespace juegoOnlineBasico
         {
             while (true)
             {
-                await Task.Delay(100);
-                string json = JsonSerializer.Serialize(jugador);
-                await socket.SendAsync(Encoding.ASCII.GetBytes(json));
-            }
+                await Task.Delay(50);
+                try
+                {
+                    string json = JsonSerializer.Serialize(jugador);
+                    await socket.SendAsync(Encoding.ASCII.GetBytes(json));
+                    jugador.BALAS.Clear();
+                } catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    continue;
+                }
+
+
+                }
         }
 
 
@@ -65,7 +75,6 @@ namespace juegoOnlineBasico
         {
             while (true)
             {
-                //await Task.Delay(500);
                 byte[] buffer = new byte[2048];
                 await socket.ReceiveAsync(buffer);
 
@@ -77,7 +86,7 @@ namespace juegoOnlineBasico
 
                     // aca tambien lockea, que solo una pueda modifcar el bloque de datos de JugadoresTemp
 
-                    foreach (KeyValuePair<int, Jugador> par in JugadoresTemp)
+                    foreach (KeyValuePair<int, Jugador> par in JugadoresTemp.ToArray())
                     {
                         if (jugadores.ContainsKey(par.Key))
                         {

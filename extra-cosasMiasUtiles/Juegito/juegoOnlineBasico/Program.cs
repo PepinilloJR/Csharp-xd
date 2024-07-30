@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using juegoOnlineBasico;
 
@@ -14,7 +16,7 @@ namespace Principal
         static void Main(string[] args)
         {
             Console.CursorVisible = false;
-           // Console.SetWindowSize(100, 50);
+            // Console.SetWindowSize(100, 50);
             //Console.SetBufferSize(100, 50);
 
             Menu menu = new Menu(">>>");
@@ -25,7 +27,7 @@ namespace Principal
             {
                 menu.DibujarMenu();
                 menu.DibujarCursor();
-                
+
                 string key = Console.ReadKey(intercept: true).Key.ToString();
 
 
@@ -45,7 +47,7 @@ namespace Principal
                         Console.Clear();
                         //Console.WriteLine("Crear partida!!!");
 
-                        Server server = new Server("26.111.95.207", 27015);
+                        Server server = new Server("26.34.159.22", 27015);
                         server.Iniciar();
                     }
                     else if (menu.posCURSOR == (Console.WindowTop / 2) + 10)
@@ -54,17 +56,19 @@ namespace Principal
                         //Console.WriteLine("Unirse a partida!!!");
                         Random rnd = new Random();
                         int iD = rnd.Next(0, 1000);
-                        Jugador jugador = new Jugador(20,20, iD);
+                        Jugador jugador = new Jugador(20, 20, iD);
 
                         Dictionary<int, Jugador> jugadores = new Dictionary<int, Jugador>();
                         Dictionary<int, Jugador> jugadoresT = new Dictionary<int, Jugador>(); // una lista para recordar el estado anterior de recibir un nuevo mensaje con los datos de los jugadores
 
-                        Cliente cliente = new Cliente("26.111.95.207", 27015, jugador, jugadores, jugadoresT);
-                        Task.Run(cliente.Iniciar);  
-                        LogicaJuegoC(jugador, jugadores, jugadoresT);
+                        List<Bala> balas = new List<Bala>();
+
+                        Cliente cliente = new Cliente("26.34.159.22", 27015, jugador, jugadores, jugadoresT, balas);
+                        Task.Run(cliente.Iniciar);
+                        LogicaJuegoC(jugador, jugadores, jugadoresT, balas);
 
                     }
-                    
+
                 }
 
             }
@@ -74,14 +78,14 @@ namespace Principal
         }
 
 
-        public static void LogicaJuegoC(Jugador jugador, Dictionary<int, Jugador> jugadores, Dictionary<int, Jugador> jugadoresT)
+        public static void LogicaJuegoC(Jugador jugador, Dictionary<int, Jugador> jugadores, Dictionary<int, Jugador> jugadoresT, List<Bala> balas)
         {
             int bPosX = jugador.POSX;
             int bPosY = jugador.POSY;
             Entrada entrada = new Entrada();
             Task.Run(() =>
             {
-               LeerEntrada(entrada);
+                LeerEntrada(entrada);
             });
 
             while (true) {
@@ -92,25 +96,56 @@ namespace Principal
                 {
                     jugador.POSX -= 1;
                     entrada.tecla = "";
+                    jugador.FACING = 0;
 
                 }
                 else if (entrada.tecla == "RightArrow")
                 {
                     jugador.POSX += 1;
                     entrada.tecla = "";
+                    jugador.FACING = 1;
 
                 }
                 else if (entrada.tecla == "UpArrow")
                 {
                     jugador.POSY -= 1;
                     entrada.tecla = "";
+                    jugador.FACING = 2;
 
                 }
                 else if (entrada.tecla == "DownArrow")
                 {
                     jugador.POSY += 1;
                     entrada.tecla = "";
+                    jugador.FACING = 3;
 
+                }
+                else if (entrada.tecla == "Spacebar")
+                {
+
+                    Bala bala;
+                    if (jugador.FACING == 0)
+                    {
+                        bala = new Bala(0, jugador.POSX, jugador.POSY);
+                        jugador.BALAS.Add(bala);
+                        balas.Add(bala);
+                    } else if (jugador.FACING == 1) {
+                        bala = new Bala(1, jugador.POSX, jugador.POSY);
+                        jugador.BALAS.Add(bala);
+                        balas.Add(bala);
+                    } else if (jugador.FACING == 2)
+                    {
+                        bala = new Bala(2, jugador.POSX, jugador.POSY);
+                        jugador.BALAS.Add(bala);
+                        balas.Add(bala);
+                    } else if (jugador.FACING == 3)
+                    {
+                        bala = new Bala(3, jugador.POSX, jugador.POSY);
+                        jugador.BALAS.Add(bala);
+                        balas.Add(bala);
+                    }
+
+                    entrada.tecla = "";
                 }
 
                 if (bPosX != jugador.POSX || bPosY != jugador.POSY)
@@ -123,7 +158,7 @@ namespace Principal
                 // aca no deberia hacer falta porque no se modifica el coso, pero hay que ir viendo
 
                 foreach (KeyValuePair<int, Jugador> par in jugadores.ToArray()) // el ToArray() es porque la lista de jugadores se pude modificar en pleto forEach, entonces tengo que usar un array temporal
-                                                                                 // para evitar este error 
+                                                                                // para evitar este error 
                 {
                     if (par.Key != jugador.ID)
                     {
@@ -136,11 +171,19 @@ namespace Principal
                     }
 
                 }
-                Console.CursorLeft = 5;
-                Console.CursorTop = 20;
-                Console.Write(JsonSerializer.Serialize(jugadores.ToDictionary()) + "||||");
-                
-                
+
+
+                foreach (Bala bala in balas)
+                {
+                    Console.CursorLeft = bala.SPOSX;
+                    Console.CursorTop = bala.SPOSY;
+                    Console.Write("*");
+                }
+                 Console.CursorLeft = 5;
+                 Console.CursorTop = 20;
+                 Console.Write(JsonSerializer.Serialize(jugadores.ToDictionary()) + "||||");
+
+
 
 
             }
@@ -153,7 +196,7 @@ namespace Principal
             while (true)
             {
                 ent.tecla = Console.ReadKey(intercept: true).Key.ToString();
-               // Task.Delay(50);
+                // Task.Delay(50);
             }
         }
 
@@ -170,18 +213,18 @@ namespace Principal
         public int posCURSOR
         {
             get { return posCursor; }
-            set { posCursor = value; }  
+            set { posCursor = value; }
         }
 
         public string CURSOR
         {
             get { return cursor; }
-            set {  cursor = value; }
+            set { cursor = value; }
         }
 
 
-        public Menu(string cursor) { 
-            
+        public Menu(string cursor) {
+
             this.cursor = cursor;
             posCursor = (Console.WindowTop / 2) + 5;
         }
@@ -227,24 +270,37 @@ namespace Principal
         int posY;
         int id;
 
+
         string spriteCabeza = "  []";
         string spriteCuerpo = "-([])-";
 
+        int facing;
+
+        List<Bala> balas;
+
         public int POSX { get { return posX; } set { posX = value; } }
 
-        public int POSY { get {  return posY; } set { posY = value; } } 
+        public int POSY { get { return posY; } set { posY = value; } }
 
         public int ID { get { return id; } set { id = value; } }
-        
+
+        public int FACING { get { return facing; } set { facing = value; } }
+
+        public List<Bala> BALAS { get { return balas; } set { balas = value; } }
 
         //public string SPRITEC { get { return spriteCabeza; } set { spriteCabeza = value; } }
         //public string SPRITECU { get { return spriteCuerpo; } set { spriteCuerpo = value; } }
 
 
+        public Jugador() {
+            balas = new List<Bala>();
+        }
+
         public Jugador(int posX, int posY, int id) {
             this.posX = posX ;
             this.posY = posY;
             this.id = id;
+            balas = new List<Bala>(); 
         }
 
         public void Dibujar()
@@ -280,6 +336,32 @@ namespace Principal
     class Entrada
     {
         public string tecla;
+
+    }
+
+
+    class Bala
+    {
+
+        int direccion;
+        int sposx;
+        int sposy;
+
+
+        public Bala() { }
+
+        public Bala(int direccion, int x, int y)
+        {
+            this.direccion = direccion;
+            sposx = x;
+            sposy = y; 
+        }
+
+
+        public int DIRECCION { get { return direccion; } set { direccion = value; } }
+        public int SPOSX { get { return sposx; } set { sposx = value; } }
+        public int SPOSY { get { return sposy; } set { sposy = value; } }
+
 
     }
 }
