@@ -88,6 +88,11 @@ namespace juegoOnlineBasico
 
                     foreach (KeyValuePair<int, Jugador> par in JugadoresTemp.ToArray())
                     {
+                        foreach (Bala bala in par.Value.BALAS.ToArray())
+                        {
+                            balas.Add(bala);
+                        }
+
                         if (jugadores.ContainsKey(par.Key))
                         {
                             jugadoresT[par.Key] = jugadores[par.Key];

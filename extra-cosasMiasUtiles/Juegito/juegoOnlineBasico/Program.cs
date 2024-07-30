@@ -2,6 +2,7 @@
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using System.Xml;
 using juegoOnlineBasico;
 
 namespace Principal
@@ -56,16 +57,19 @@ namespace Principal
                         //Console.WriteLine("Unirse a partida!!!");
                         Random rnd = new Random();
                         int iD = rnd.Next(0, 1000);
-                        Jugador jugador = new Jugador(20, 20, iD);
+                        object locker = new object();
+                        Jugador jugador = new Jugador(20, 20, iD, locker);
 
                         Dictionary<int, Jugador> jugadores = new Dictionary<int, Jugador>();
                         Dictionary<int, Jugador> jugadoresT = new Dictionary<int, Jugador>(); // una lista para recordar el estado anterior de recibir un nuevo mensaje con los datos de los jugadores
 
                         List<Bala> balas = new List<Bala>();
 
+                       
+
                         Cliente cliente = new Cliente("26.34.159.22", 27015, jugador, jugadores, jugadoresT, balas);
                         Task.Run(cliente.Iniciar);
-                        LogicaJuegoC(jugador, jugadores, jugadoresT, balas);
+                        LogicaJuegoC(jugador, jugadores, jugadoresT, balas, locker);
 
                     }
 
@@ -78,8 +82,11 @@ namespace Principal
         }
 
 
-        public static void LogicaJuegoC(Jugador jugador, Dictionary<int, Jugador> jugadores, Dictionary<int, Jugador> jugadoresT, List<Bala> balas)
+        public static void LogicaJuegoC(Jugador jugador, Dictionary<int, Jugador> jugadores, Dictionary<int, Jugador> jugadoresT, List<Bala> balas, object locker)
         {
+
+
+            Timer timer = new Timer();
             int bPosX = jugador.POSX;
             int bPosY = jugador.POSY;
             Entrada entrada = new Entrada();
@@ -87,7 +94,11 @@ namespace Principal
             {
                 LeerEntrada(entrada);
             });
-
+            
+            Task.Run(() => { 
+                TimerBalas(timer);
+            });
+            
             while (true) {
                 bPosX = jugador.POSX;
                 bPosY = jugador.POSY;
@@ -128,21 +139,21 @@ namespace Principal
                     {
                         bala = new Bala(0, jugador.POSX, jugador.POSY);
                         jugador.BALAS.Add(bala);
-                        balas.Add(bala);
+                       // balas.Add(bala);
                     } else if (jugador.FACING == 1) {
                         bala = new Bala(1, jugador.POSX, jugador.POSY);
                         jugador.BALAS.Add(bala);
-                        balas.Add(bala);
+                      //  balas.Add(bala);
                     } else if (jugador.FACING == 2)
                     {
                         bala = new Bala(2, jugador.POSX, jugador.POSY);
                         jugador.BALAS.Add(bala);
-                        balas.Add(bala);
+                       // balas.Add(bala);
                     } else if (jugador.FACING == 3)
                     {
                         bala = new Bala(3, jugador.POSX, jugador.POSY);
                         jugador.BALAS.Add(bala);
-                        balas.Add(bala);
+                      //  balas.Add(bala);
                     }
 
                     entrada.tecla = "";
@@ -164,6 +175,7 @@ namespace Principal
                     {
                         if (jugadoresT[par.Key].POSX != par.Value.POSX || jugadoresT[par.Key].POSY != par.Value.POSY)
                         {
+                            par.Value.LOCKER = locker;
                             par.Value.Borrar(jugadoresT[par.Key].POSX, jugadoresT[par.Key].POSY);
                             par.Value.Dibujar();
                         }
@@ -172,16 +184,13 @@ namespace Principal
 
                 }
 
+                ManejarBalas(balas, locker, timer);   
 
-                foreach (Bala bala in balas)
-                {
-                    Console.CursorLeft = bala.SPOSX;
-                    Console.CursorTop = bala.SPOSY;
-                    Console.Write("*");
-                }
-                 Console.CursorLeft = 5;
-                 Console.CursorTop = 20;
-                 Console.Write(JsonSerializer.Serialize(jugadores.ToDictionary()) + "||||");
+
+                
+                // Console.CursorLeft = 5;
+                 //Console.CursorTop = 20;
+                 //Console.Write(JsonSerializer.Serialize(jugadores.ToDictionary()) + "||||");
 
 
 
@@ -189,6 +198,16 @@ namespace Principal
             }
         }
 
+
+
+        public static void PosicionarCursor(int x, int y, object locker, string dato)
+        {
+            lock(locker) {
+            Console.CursorLeft = x;
+            Console.CursorTop = y;
+            Console.Write(dato);
+            }
+        }
 
 
         static void LeerEntrada(Entrada ent)
@@ -200,6 +219,84 @@ namespace Principal
             }
         }
 
+        static void ManejarBalas(List<Bala> balas, object locker, Timer timer)
+        {
+            if (timer.FINALIZADO)
+            {
+                try
+                {
+                    foreach (Bala bala in balas.ToArray())
+                    {
+                        //Task.Delay(100);
+                        Program.PosicionarCursor(bala.SPOSX, bala.SPOSY, locker, " ");
+                        //Console.CursorLeft = bala.SPOSX;
+                        //Console.CursorTop = bala.SPOSY;
+                        // Console.Write(" ");
+
+
+                        if (bala.DIRECCION == 0)
+                        {
+                            bala.SPOSX -= 1;
+                        }
+                        if (bala.DIRECCION == 1)
+                        {
+                            bala.SPOSX += 1;
+                        }
+                        if (bala.DIRECCION == 2)
+                        {
+                            bala.SPOSY -= 1;
+                        }
+                        if (bala.DIRECCION == 3)
+                        {
+                            bala.SPOSY += 1;
+                        }
+                        bala.DISTANCIA += 1; 
+
+                        if (bala.comprobarDistancia())
+                        {
+                            balas.Remove(bala);
+                        } else
+                        {
+                           Program.PosicionarCursor(bala.SPOSX, bala.SPOSY, locker, "*");
+                        }
+                       
+                        //Console.CursorLeft = bala.SPOSX;
+                        // Console.CursorTop = bala.SPOSY;
+                        //Console.Write("*");
+
+                    }
+                    timer.FINALIZADO = false;   
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+        }
+
+
+        static async void TimerBalas (Timer timer )
+        {
+            while(true)
+            {
+                await Task.Delay(10);
+                timer.FINALIZADO = true;
+            }
+        }
+    }
+
+
+    class Timer
+    {
+        bool finalizado;
+
+        public bool FINALIZADO { get { return finalizado; } set { finalizado = value; } }
+
+
+        public Timer()
+        {
+            finalizado = true;
+        }
     }
 
 
@@ -249,6 +346,9 @@ namespace Principal
 
             Console.CursorLeft = (Console.BufferWidth / 2) - 9;
             Console.CursorTop = cursorBeforePos;
+
+            
+
             Console.Write(String.Concat(Enumerable.Repeat(" ", CURSOR.Length)));
 
             Console.CursorTop = posCursor;
@@ -270,6 +370,7 @@ namespace Principal
         int posY;
         int id;
 
+        object locker;
 
         string spriteCabeza = "  []";
         string spriteCuerpo = "-([])-";
@@ -288,6 +389,7 @@ namespace Principal
 
         public List<Bala> BALAS { get { return balas; } set { balas = value; } }
 
+        public object LOCKER { get { return locker; } set { locker = value; } } 
         //public string SPRITEC { get { return spriteCabeza; } set { spriteCabeza = value; } }
         //public string SPRITECU { get { return spriteCuerpo; } set { spriteCuerpo = value; } }
 
@@ -296,24 +398,28 @@ namespace Principal
             balas = new List<Bala>();
         }
 
-        public Jugador(int posX, int posY, int id) {
+        public Jugador(int posX, int posY, int id, object locker) {
             this.posX = posX ;
             this.posY = posY;
             this.id = id;
             balas = new List<Bala>(); 
+            this.locker = locker;
         }
 
         public void Dibujar()
         {
 
-            Console.CursorLeft = posX;
-            Console.CursorTop = posY;
+            Program.PosicionarCursor(POSX, POSY, LOCKER, spriteCabeza);
 
-            Console.Write(spriteCabeza);                
-            Console.CursorLeft = posX;
-            Console.CursorTop = posY + 1;
+           // Console.CursorLeft = posX;
+            //Console.CursorTop = posY;
 
-            Console.Write(spriteCuerpo);
+          //  Console.Write(spriteCabeza);
+
+            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, spriteCuerpo);
+           // Console.CursorLeft = posX;
+           // Console.CursorTop = posY + 1;
+            //Console.Write(spriteCuerpo);
 
         }
 
@@ -321,13 +427,14 @@ namespace Principal
         {
             Console.CursorLeft = bPosX;
             Console.CursorTop = bPosY;
-                          
+            Program.PosicionarCursor(bPosX, bPosY, LOCKER, "    ");
             Console.Write("    ");
 
-            Console.CursorLeft = bPosX;
-            Console.CursorTop = bPosY + 1;
+            Program.PosicionarCursor(bPosX, bPosY + 1, LOCKER, "       ");
+            //Console.CursorLeft = bPosX;
+            //Console.CursorTop = bPosY + 1;
 
-            Console.Write("       ");
+            //Console.Write("       ");
         }
 
     }
@@ -347,6 +454,9 @@ namespace Principal
         int sposx;
         int sposy;
 
+        int distancia;
+        //int bposx;
+        //int bposy;
 
         public Bala() { }
 
@@ -354,13 +464,33 @@ namespace Principal
         {
             this.direccion = direccion;
             sposx = x;
-            sposy = y; 
+            sposy = y;
+            distancia = 0;
+          //  bposx = x;
+          //  bposy = y;
+        }
+
+
+        public bool comprobarDistancia()
+        {
+            if (direccion == 3 || direccion == 2) {
+                if (distancia > 10) { return true; }
+            } else if (direccion == 1 || direccion == 0) {
+                if (distancia > 30) { return true;}
+            }
+            return false;
+
         }
 
 
         public int DIRECCION { get { return direccion; } set { direccion = value; } }
         public int SPOSX { get { return sposx; } set { sposx = value; } }
         public int SPOSY { get { return sposy; } set { sposy = value; } }
+
+        public int DISTANCIA { get { return distancia; } set { distancia = value; } }
+
+       // public int BPOSX { get { return bposx; } set {  bposx = value; } }
+        //public int BPOSY { get { return bposy; } set { bposy = value; } }
 
 
     }
