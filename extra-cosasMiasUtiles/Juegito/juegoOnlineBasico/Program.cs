@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Xml;
@@ -81,12 +82,12 @@ namespace Principal
 
         }
 
-
         public static void LogicaJuegoC(Jugador jugador, Dictionary<int, Jugador> jugadores, Dictionary<int, Jugador> jugadoresT, List<Bala> balas, object locker)
         {
 
 
-            Timer timer = new Timer();
+            Timer timerBalas = new Timer();
+            Timer timerDisparo = new Timer();
             int bPosX = jugador.POSX;
             int bPosY = jugador.POSY;
             Entrada entrada = new Entrada();
@@ -96,7 +97,12 @@ namespace Principal
             });
             
             Task.Run(() => { 
-                TimerBalas(timer);
+                TimerBalas(timerBalas);
+            });
+
+            Task.Run(() =>
+            {
+                TimerDisparo(timerDisparo);
             });
             
             while (true) {
@@ -131,7 +137,7 @@ namespace Principal
                     jugador.FACING = 3;
 
                 }
-                else if (entrada.tecla == "Spacebar")
+                else if (entrada.tecla == "Spacebar" & timerDisparo.FINALIZADO)
                 {
 
                     Bala bala;
@@ -155,7 +161,7 @@ namespace Principal
                         jugador.BALAS.Add(bala);
                       //  balas.Add(bala);
                     }
-
+                    timerDisparo.FINALIZADO = false;
                     entrada.tecla = "";
                 }
 
@@ -165,6 +171,12 @@ namespace Principal
                     jugador.Borrar(bPosX, bPosY);
                     jugador.Dibujar();
                 }
+
+                if (jugador.VIDA <= 0)
+                {
+                   
+                }
+
 
                 // aca no deberia hacer falta porque no se modifica el coso, pero hay que ir viendo
 
@@ -184,7 +196,7 @@ namespace Principal
 
                 }
 
-                ManejarBalas(balas, locker, timer);   
+                ManejarBalas(balas, locker, timerBalas);   
 
 
                 
@@ -198,8 +210,6 @@ namespace Principal
             }
         }
 
-
-
         public static void PosicionarCursor(int x, int y, object locker, string dato)
         {
             lock(locker) {
@@ -208,7 +218,6 @@ namespace Principal
             Console.Write(dato);
             }
         }
-
 
         static void LeerEntrada(Entrada ent)
         {
@@ -225,6 +234,7 @@ namespace Principal
             {
                 try
                 {
+
                     foreach (Bala bala in balas.ToArray())
                     {
                         //Task.Delay(100);
@@ -274,13 +284,24 @@ namespace Principal
             }
         }
 
-
         static async void TimerBalas (Timer timer )
         {
             while(true)
             {
                 await Task.Delay(10);
                 timer.FINALIZADO = true;
+            }
+        }
+
+        static async void TimerDisparo (Timer timer )
+        {
+            while (true)
+            {
+                if (timer.FINALIZADO == false)
+                {
+                    await Task.Delay(1000);
+                    timer.FINALIZADO = true;
+                } 
             }
         }
     }
@@ -372,10 +393,13 @@ namespace Principal
 
         object locker;
 
-        string spriteCabeza = "  []";
-        string spriteCuerpo = "-([])-";
+        string spriteSombrero = "__▄▄__";
+        string spriteCabeza =   "  ▀▀  ";
+        string spriteCuerpo =   "┌█▒▒█┐";
 
         int facing;
+
+        int vida;
 
         List<Bala> balas;
 
@@ -387,6 +411,8 @@ namespace Principal
 
         public int FACING { get { return facing; } set { facing = value; } }
 
+        public int VIDA { get { return vida; } set { vida = value; } }
+
         public List<Bala> BALAS { get { return balas; } set { balas = value; } }
 
         public object LOCKER { get { return locker; } set { locker = value; } } 
@@ -396,6 +422,7 @@ namespace Principal
 
         public Jugador() {
             balas = new List<Bala>();
+            this.vida = 100;
         }
 
         public Jugador(int posX, int posY, int id, object locker) {
@@ -404,19 +431,21 @@ namespace Principal
             this.id = id;
             balas = new List<Bala>(); 
             this.locker = locker;
+            this.vida = 100;
         }
 
         public void Dibujar()
         {
 
-            Program.PosicionarCursor(POSX, POSY, LOCKER, spriteCabeza);
+            Program.PosicionarCursor(POSX, POSY, LOCKER, spriteSombrero);
+            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, spriteCabeza);
 
            // Console.CursorLeft = posX;
             //Console.CursorTop = posY;
 
           //  Console.Write(spriteCabeza);
 
-            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, spriteCuerpo);
+            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, spriteCuerpo);
            // Console.CursorLeft = posX;
            // Console.CursorTop = posY + 1;
             //Console.Write(spriteCuerpo);
@@ -426,11 +455,14 @@ namespace Principal
         public void Borrar(int bPosX, int bPosY)
         {
             Console.CursorLeft = bPosX;
-            Console.CursorTop = bPosY;
-            Program.PosicionarCursor(bPosX, bPosY, LOCKER, "    ");
-            Console.Write("    ");
+            Console.CursorTop = bPosY;                     
+            Program.PosicionarCursor(bPosX, bPosY, LOCKER, "      ");
+            //Console.Write("    ");
 
-            Program.PosicionarCursor(bPosX, bPosY + 1, LOCKER, "       ");
+            Program.PosicionarCursor(bPosX, bPosY + 1, LOCKER, "      ");
+
+            Program.PosicionarCursor(bPosX, bPosY + 2, LOCKER, "      ");
+            
             //Console.CursorLeft = bPosX;
             //Console.CursorTop = bPosY + 1;
 
