@@ -169,12 +169,12 @@ namespace Principal
                 {
 
                     jugador.Borrar(bPosX, bPosY);
-                    jugador.Dibujar();
                 }
+                jugador.Dibujar();
 
                 if (jugador.VIDA <= 0)
                 {
-                   
+                    jugador.MUERTO = true;
                 }
 
 
@@ -185,18 +185,20 @@ namespace Principal
                 {
                     if (par.Key != jugador.ID)
                     {
+                        par.Value.LOCKER = locker;
                         if (jugadoresT[par.Key].POSX != par.Value.POSX || jugadoresT[par.Key].POSY != par.Value.POSY)
                         {
-                            par.Value.LOCKER = locker;
+                            
                             par.Value.Borrar(jugadoresT[par.Key].POSX, jugadoresT[par.Key].POSY);
-                            par.Value.Dibujar();
+                            
                         }
+                        par.Value.Dibujar();
 
                     }
 
                 }
 
-                ManejarBalas(balas, locker, timerBalas);   
+                ManejarBalas(balas, locker, timerBalas, jugador);   
 
 
                 
@@ -219,6 +221,18 @@ namespace Principal
             }
         }
 
+        public static void PosicionarCursor(int x, int y, object locker, string dato, ConsoleColor color)
+        {
+            lock (locker)
+            {
+                Console.ForegroundColor = color;
+                Console.CursorLeft = x;
+                Console.CursorTop = y;
+                Console.Write(dato);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+
         static void LeerEntrada(Entrada ent)
         {
             while (true)
@@ -228,7 +242,7 @@ namespace Principal
             }
         }
 
-        static void ManejarBalas(List<Bala> balas, object locker, Timer timer)
+        static void ManejarBalas(List<Bala> balas, object locker, Timer timer, Jugador jugador)
         {
             if (timer.FINALIZADO)
             {
@@ -262,14 +276,21 @@ namespace Principal
                         }
                         bala.DISTANCIA += 1; 
 
+
+                        if (bala.SPOSX == jugador.POSX & bala.SPOSY == jugador.POSY)
+                        {
+                            jugador.VIDA = 0;
+                        }
+
                         if (bala.comprobarDistancia())
                         {
                             balas.Remove(bala);
                         } else
                         {
-                           Program.PosicionarCursor(bala.SPOSX, bala.SPOSY, locker, "*");
+                           Program.PosicionarCursor(bala.SPOSX, bala.SPOSY, locker, "*", ConsoleColor.Yellow);
                         }
                        
+                        
                         //Console.CursorLeft = bala.SPOSX;
                         // Console.CursorTop = bala.SPOSY;
                         //Console.Write("*");
@@ -400,6 +421,7 @@ namespace Principal
         int facing;
 
         int vida;
+        bool muerto;
 
         List<Bala> balas;
 
@@ -412,6 +434,8 @@ namespace Principal
         public int FACING { get { return facing; } set { facing = value; } }
 
         public int VIDA { get { return vida; } set { vida = value; } }
+
+        public bool MUERTO { get { return muerto; } set { muerto = value; } }   
 
         public List<Bala> BALAS { get { return balas; } set { balas = value; } }
 
@@ -436,20 +460,18 @@ namespace Principal
 
         public void Dibujar()
         {
-
-            Program.PosicionarCursor(POSX, POSY, LOCKER, spriteSombrero);
-            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, spriteCabeza);
-
-           // Console.CursorLeft = posX;
-            //Console.CursorTop = posY;
-
-          //  Console.Write(spriteCabeza);
-
-            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, spriteCuerpo);
-           // Console.CursorLeft = posX;
-           // Console.CursorTop = posY + 1;
-            //Console.Write(spriteCuerpo);
-
+            if (muerto == false)
+            {
+                Program.PosicionarCursor(POSX, POSY, LOCKER, spriteSombrero);
+                Program.PosicionarCursor(POSX, POSY + 1, LOCKER, spriteCabeza);
+                Program.PosicionarCursor(POSX, POSY + 2, LOCKER, spriteCuerpo);
+            }
+            else
+            {
+                Program.PosicionarCursor(POSX, POSY, LOCKER, spriteSombrero, ConsoleColor.Red);
+                Program.PosicionarCursor(POSX, POSY + 1, LOCKER, spriteCabeza, ConsoleColor.Red);
+                Program.PosicionarCursor(POSX, POSY + 2, LOCKER, spriteCuerpo, ConsoleColor.Red);
+            }
         }
 
         public void Borrar(int bPosX, int bPosY)

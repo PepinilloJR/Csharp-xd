@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("juegoOnlineBasico")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9957fd8c1d65b2b8ca46173c6dc2410dd2cf665c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3fe7363bbb06b5c8bf524de952a48bdb64640a4b")]
 [assembly: System.Reflection.AssemblyProductAttribute("juegoOnlineBasico")]
 [assembly: System.Reflection.AssemblyTitleAttribute("juegoOnlineBasico")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

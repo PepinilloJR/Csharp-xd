@@ -7,12 +7,12 @@
       "RelativeMoniker": "D:0:0:{E619A876-6E54-4D00-B238-8A227856E674}|juegoOnlineBasico.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E619A876-6E54-4D00-B238-8A227856E674}|juegoOnlineBasico.csproj|c:\\users\\pepin\\onedrive\\escritorio\\proyectos en .net\\extra-cosasmiasutiles\\juegito\\juegoonlinebasico\\networkcliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E619A876-6E54-4D00-B238-8A227856E674}|juegoOnlineBasico.csproj|solutionrelative:networkcliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E619A876-6E54-4D00-B238-8A227856E674}|juegoOnlineBasico.csproj|c:\\users\\pepin\\onedrive\\escritorio\\proyectos en .net\\extra-cosasmiasutiles\\juegito\\juegoonlinebasico\\networkserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E619A876-6E54-4D00-B238-8A227856E674}|juegoOnlineBasico.csproj|solutionrelative:networkserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E619A876-6E54-4D00-B238-8A227856E674}|juegoOnlineBasico.csproj|c:\\users\\pepin\\onedrive\\escritorio\\proyectos en .net\\extra-cosasmiasutiles\\juegito\\juegoonlinebasico\\networkcliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E619A876-6E54-4D00-B238-8A227856E674}|juegoOnlineBasico.csproj|solutionrelative:networkcliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -32,7 +32,7 @@
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\pepin\\OneDrive\\Escritorio\\proyectos en .NET\\extra-cosasMiasUtiles\\Juegito\\juegoOnlineBasico\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AQIAAIMBAAAAAAAAAAAswI8BAAATAAAA",
+              "ViewState": "AQIAAJsAAAAAAAAAAAAtwKkAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-25T14:20:52.407Z",
               "IsPinned": true,
@@ -40,13 +40,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "NetworkServer.cs",
               "DocumentMoniker": "C:\\Users\\pepin\\OneDrive\\Escritorio\\proyectos en .NET\\extra-cosasMiasUtiles\\Juegito\\juegoOnlineBasico\\NetworkServer.cs",
               "RelativeDocumentMoniker": "NetworkServer.cs",
               "ToolTip": "C:\\Users\\pepin\\OneDrive\\Escritorio\\proyectos en .NET\\extra-cosasMiasUtiles\\Juegito\\juegoOnlineBasico\\NetworkServer.cs",
               "RelativeToolTip": "NetworkServer.cs",
-              "ViewState": "AQIAADUAAAAAAAAAAAAwwHkAAABJAAAA",
+              "ViewState": "AQIAAGoAAAAAAAAAAAAcwHkAAABJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-07-26T18:21:15.353Z",
               "IsPinned": true,
@@ -54,7 +54,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "NetworkCliente.cs",
               "DocumentMoniker": "C:\\Users\\pepin\\OneDrive\\Escritorio\\proyectos en .NET\\extra-cosasMiasUtiles\\Juegito\\juegoOnlineBasico\\NetworkCliente.cs",
               "RelativeDocumentMoniker": "NetworkCliente.cs",
