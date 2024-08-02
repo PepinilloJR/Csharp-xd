@@ -91,6 +91,9 @@ namespace Principal
             int bPosX = jugador.POSX;
             int bPosY = jugador.POSY;
             Entrada entrada = new Entrada();
+
+            List<int> idJugadoresMuertos = new List<int>(); 
+
             Task.Run(() =>
             {
                 LeerEntrada(entrada);
@@ -109,75 +112,85 @@ namespace Principal
                 bPosX = jugador.POSX;
                 bPosY = jugador.POSY;
                 //entrada.tecla = Console.ReadKey(intercept: true).Key.ToString();
-                if (entrada.tecla == "LeftArrow")
+                if (jugador.MUERTO == false)
                 {
-                    jugador.POSX -= 1;
-                    entrada.tecla = "";
-                    jugador.FACING = 0;
-
-                }
-                else if (entrada.tecla == "RightArrow")
-                {
-                    jugador.POSX += 1;
-                    entrada.tecla = "";
-                    jugador.FACING = 1;
-
-                }
-                else if (entrada.tecla == "UpArrow")
-                {
-                    jugador.POSY -= 1;
-                    entrada.tecla = "";
-                    jugador.FACING = 2;
-
-                }
-                else if (entrada.tecla == "DownArrow")
-                {
-                    jugador.POSY += 1;
-                    entrada.tecla = "";
-                    jugador.FACING = 3;
-
-                }
-                else if (entrada.tecla == "Spacebar" & timerDisparo.FINALIZADO)
-                {
-
-                    Bala bala;
-                    if (jugador.FACING == 0)
+                    if (entrada.tecla == "LeftArrow")
                     {
-                        bala = new Bala(0, jugador.POSX, jugador.POSY);
-                        jugador.BALAS.Add(bala);
-                       // balas.Add(bala);
-                    } else if (jugador.FACING == 1) {
-                        bala = new Bala(1, jugador.POSX, jugador.POSY);
-                        jugador.BALAS.Add(bala);
-                      //  balas.Add(bala);
-                    } else if (jugador.FACING == 2)
-                    {
-                        bala = new Bala(2, jugador.POSX, jugador.POSY);
-                        jugador.BALAS.Add(bala);
-                       // balas.Add(bala);
-                    } else if (jugador.FACING == 3)
-                    {
-                        bala = new Bala(3, jugador.POSX, jugador.POSY);
-                        jugador.BALAS.Add(bala);
-                      //  balas.Add(bala);
+                        jugador.POSX -= 1;
+                        entrada.tecla = "";
+                        jugador.FACING = 0;
+
                     }
-                    timerDisparo.FINALIZADO = false;
-                    entrada.tecla = "";
-                }
+                    else if (entrada.tecla == "RightArrow")
+                    {
+                        jugador.POSX += 1;
+                        entrada.tecla = "";
+                        jugador.FACING = 1;
 
-                if (bPosX != jugador.POSX || bPosY != jugador.POSY)
+                    }
+                    else if (entrada.tecla == "UpArrow")
+                    {
+                        jugador.POSY -= 1;
+                        entrada.tecla = "";
+                        jugador.FACING = 2;
+
+                    }
+                    else if (entrada.tecla == "DownArrow")
+                    {
+                        jugador.POSY += 1;
+                        entrada.tecla = "";
+                        jugador.FACING = 3;
+
+                    }
+                    else if (entrada.tecla == "Spacebar" & timerDisparo.FINALIZADO)
+                    {
+
+                        Bala bala;
+                        if (jugador.FACING == 0)
+                        {
+                            bala = new Bala(0, jugador.POSX, jugador.POSY);
+                            jugador.BALAS.Add(bala);
+                            // balas.Add(bala);
+                        }
+                        else if (jugador.FACING == 1)
+                        {
+                            bala = new Bala(1, jugador.POSX, jugador.POSY);
+                            jugador.BALAS.Add(bala);
+                            //  balas.Add(bala);
+                        }
+                        else if (jugador.FACING == 2)
+                        {
+                            bala = new Bala(2, jugador.POSX, jugador.POSY);
+                            jugador.BALAS.Add(bala);
+                            // balas.Add(bala);
+                        }
+                        else if (jugador.FACING == 3)
+                        {
+                            bala = new Bala(3, jugador.POSX, jugador.POSY);
+                            jugador.BALAS.Add(bala);
+                            //  balas.Add(bala);
+                        }
+                        timerDisparo.FINALIZADO = false;
+                        entrada.tecla = "";
+                    }
+
+                    if (bPosX != jugador.POSX || bPosY != jugador.POSY)
+                    {
+
+                        jugador.Borrar(bPosX, bPosY);
+                    }
+                    jugador.Dibujar();
+
+                    if (jugador.VIDA <= 0)
+                    {
+                        jugador.MUERTO = true;
+                    }
+
+                } else if (jugador.ANIMADO == false)
                 {
-
-                    jugador.Borrar(bPosX, bPosY);
+                    jugador.ANIMADO = true;
+                    Task.Run(jugador.MorirAnimacion);
                 }
-                jugador.Dibujar();
-
-                if (jugador.VIDA <= 0)
-                {
-                    jugador.MUERTO = true;
-                }
-
-
                 // aca no deberia hacer falta porque no se modifica el coso, pero hay que ir viendo
 
                 foreach (KeyValuePair<int, Jugador> par in jugadores.ToArray()) // el ToArray() es porque la lista de jugadores se pude modificar en pleto forEach, entonces tengo que usar un array temporal
@@ -188,11 +201,24 @@ namespace Principal
                         par.Value.LOCKER = locker;
                         if (jugadoresT[par.Key].POSX != par.Value.POSX || jugadoresT[par.Key].POSY != par.Value.POSY)
                         {
-                            
+
                             par.Value.Borrar(jugadoresT[par.Key].POSX, jugadoresT[par.Key].POSY);
-                            
+
                         }
-                        par.Value.Dibujar();
+
+                        if (par.Value.MUERTO == false)
+                        {
+                            par.Value.Dibujar();
+                        }
+                        else if (par.Value.ANIMADO == true)
+                        {
+                            if (idJugadoresMuertos.Contains(par.Value.ID) == false)
+                            {
+                                Task.Run(par.Value.MorirAnimacion);
+                                idJugadoresMuertos.Add(par.Value.ID);
+                            }
+                        }
+
 
                     }
 
@@ -215,9 +241,9 @@ namespace Principal
         public static void PosicionarCursor(int x, int y, object locker, string dato)
         {
             lock(locker) {
-            Console.CursorLeft = x;
-            Console.CursorTop = y;
-            Console.Write(dato);
+                Console.CursorLeft = x;
+                Console.CursorTop = y;
+                Console.Write(dato);
             }
         }
 
@@ -422,6 +448,7 @@ namespace Principal
 
         int vida;
         bool muerto;
+        bool animado;
 
         List<Bala> balas;
 
@@ -437,6 +464,8 @@ namespace Principal
 
         public bool MUERTO { get { return muerto; } set { muerto = value; } }   
 
+        public bool ANIMADO { get { return animado; } set { animado = value; } }
+
         public List<Bala> BALAS { get { return balas; } set { balas = value; } }
 
         public object LOCKER { get { return locker; } set { locker = value; } } 
@@ -447,6 +476,8 @@ namespace Principal
         public Jugador() {
             balas = new List<Bala>();
             this.vida = 100;
+            this.muerto = false;
+            this.animado = false;
         }
 
         public Jugador(int posX, int posY, int id, object locker) {
@@ -456,6 +487,8 @@ namespace Principal
             balas = new List<Bala>(); 
             this.locker = locker;
             this.vida = 100;
+            this.muerto = false;
+            this.animado = false;
         }
 
         public void Dibujar()
@@ -484,11 +517,41 @@ namespace Principal
             Program.PosicionarCursor(bPosX, bPosY + 1, LOCKER, "      ");
 
             Program.PosicionarCursor(bPosX, bPosY + 2, LOCKER, "      ");
-            
+
             //Console.CursorLeft = bPosX;
             //Console.CursorTop = bPosY + 1;
 
             //Console.Write("       ");
+        }
+
+        public async Task MorirAnimacion()
+        {
+
+            Program.PosicionarCursor(POSX, POSY, LOCKER, "         ", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, "       ", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "       ", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY, LOCKER, "#_▄- *#", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, "* ▀- #*", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "┌█▒▒█┐", ConsoleColor.Red);
+            await Task.Delay(200);                       
+            Program.PosicionarCursor(POSX, POSY, LOCKER, "       ", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, "       ", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "      ", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY, LOCKER, "▀   ", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 1, LOCKER,"* ▀-", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "┌█▒▀-", ConsoleColor.Red);
+            await Task.Delay(200);
+            Program.PosicionarCursor(POSX, POSY, LOCKER, "   ", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, "*  ▀", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "┌█▀▀-", ConsoleColor.Red);
+            await Task.Delay(200);
+            Program.PosicionarCursor(POSX, POSY, LOCKER, "       ", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, "       ", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "      ", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY, LOCKER, "   ", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, "   ", ConsoleColor.Red);
+            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "▄▄▄▄ ██", ConsoleColor.Red);
+           
         }
 
     }
