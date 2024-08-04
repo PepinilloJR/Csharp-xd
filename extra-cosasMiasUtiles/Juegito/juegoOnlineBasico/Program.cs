@@ -4,6 +4,7 @@ using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Xml;
+using AuxMethods;
 using juegoOnlineBasico;
 
 namespace Principal
@@ -14,7 +15,6 @@ namespace Principal
 
     class Program
     {
-
         static void Main(string[] args)
         {
             Console.CursorVisible = false;
@@ -22,8 +22,6 @@ namespace Principal
             //Console.SetBufferSize(100, 50);
 
             Menu menu = new Menu(">>>");
-
-
 
             while (true)
             {
@@ -59,18 +57,17 @@ namespace Principal
                         Random rnd = new Random();
                         int iD = rnd.Next(0, 1000);
                         object locker = new object();
-                        Jugador jugador = new Jugador(20, 20, iD, locker);
-
+                        Jugador jugador = new Jugador(20, 20, iD, locker, 6, 3);
+                        Escenario escenario = new Escenario(1, 2, 110, 30, ["█", "▀"]);
                         Dictionary<int, Jugador> jugadores = new Dictionary<int, Jugador>();
                         Dictionary<int, Jugador> jugadoresT = new Dictionary<int, Jugador>(); // una lista para recordar el estado anterior de recibir un nuevo mensaje con los datos de los jugadores
 
                         List<Bala> balas = new List<Bala>();
 
-                       
-
                         Cliente cliente = new Cliente("26.34.159.22", 27015, jugador, jugadores, jugadoresT, balas);
                         Task.Run(cliente.Iniciar);
-                        LogicaJuegoC(jugador, jugadores, jugadoresT, balas, locker);
+                       
+                        LogicaJuegoC(jugador, jugadores, jugadoresT, balas, locker, escenario);
 
                     }
 
@@ -82,10 +79,8 @@ namespace Principal
 
         }
 
-        public static void LogicaJuegoC(Jugador jugador, Dictionary<int, Jugador> jugadores, Dictionary<int, Jugador> jugadoresT, List<Bala> balas, object locker)
+        public static void LogicaJuegoC(Jugador jugador, Dictionary<int, Jugador> jugadores, Dictionary<int, Jugador> jugadoresT, List<Bala> balas, object locker, Escenario escenario)
         {
-
-
             Timer timerBalas = new Timer();
             Timer timerDisparo = new Timer();
             int bPosX = jugador.POSX;
@@ -96,7 +91,7 @@ namespace Principal
 
             Task.Run(() =>
             {
-                LeerEntrada(entrada);
+                AuxMeth.LeerEntrada(entrada);
             });
             
             Task.Run(() => { 
@@ -107,76 +102,17 @@ namespace Principal
             {
                 TimerDisparo(timerDisparo);
             });
-            
+            escenario.DibujarBordes(locker);
             while (true) {
                 bPosX = jugador.POSX;
                 bPosY = jugador.POSY;
                 //entrada.tecla = Console.ReadKey(intercept: true).Key.ToString();
                 if (jugador.MUERTO == false)
                 {
-                    if (entrada.tecla == "LeftArrow")
-                    {
-                        jugador.POSX -= 1;
-                        entrada.tecla = "";
-                        jugador.FACING = 0;
-
-                    }
-                    else if (entrada.tecla == "RightArrow")
-                    {
-                        jugador.POSX += 1;
-                        entrada.tecla = "";
-                        jugador.FACING = 1;
-
-                    }
-                    else if (entrada.tecla == "UpArrow")
-                    {
-                        jugador.POSY -= 1;
-                        entrada.tecla = "";
-                        jugador.FACING = 2;
-
-                    }
-                    else if (entrada.tecla == "DownArrow")
-                    {
-                        jugador.POSY += 1;
-                        entrada.tecla = "";
-                        jugador.FACING = 3;
-
-                    }
-                    else if (entrada.tecla == "Spacebar" & timerDisparo.FINALIZADO)
-                    {
-
-                        Bala bala;
-                        if (jugador.FACING == 0)
-                        {
-                            bala = new Bala(0, jugador.POSX, jugador.POSY);
-                            jugador.BALAS.Add(bala);
-                            // balas.Add(bala);
-                        }
-                        else if (jugador.FACING == 1)
-                        {
-                            bala = new Bala(1, jugador.POSX, jugador.POSY);
-                            jugador.BALAS.Add(bala);
-                            //  balas.Add(bala);
-                        }
-                        else if (jugador.FACING == 2)
-                        {
-                            bala = new Bala(2, jugador.POSX, jugador.POSY);
-                            jugador.BALAS.Add(bala);
-                            // balas.Add(bala);
-                        }
-                        else if (jugador.FACING == 3)
-                        {
-                            bala = new Bala(3, jugador.POSX, jugador.POSY);
-                            jugador.BALAS.Add(bala);
-                            //  balas.Add(bala);
-                        }
-                        timerDisparo.FINALIZADO = false;
-                        entrada.tecla = "";
-                    }
+                    MoverJugador(jugador, entrada, timerDisparo, escenario);
 
                     if (bPosX != jugador.POSX || bPosY != jugador.POSY)
                     {
-
                         jugador.Borrar(bPosX, bPosY);
                     }
                     jugador.Dibujar();
@@ -190,6 +126,14 @@ namespace Principal
                 {
                     jugador.ANIMADO = true;
                     Task.Run(jugador.MorirAnimacion);
+                }
+                // logica para revivir
+                if (entrada.tecla == "R" & jugador.MUERTO)
+                {
+                    jugador.VIDA = 100;
+                    jugador.MUERTO = false;
+                    jugador.ANIMADO = false;
+                    entrada.tecla = "";
                 }
                 // aca no deberia hacer falta porque no se modifica el coso, pero hay que ir viendo
 
@@ -210,65 +154,96 @@ namespace Principal
                         {
                             par.Value.Dibujar();
                         }
-                        else if (par.Value.ANIMADO == true)
+                        else if (idJugadoresMuertos.Contains(par.Value.ID) == false)
                         {
-                            if (idJugadoresMuertos.Contains(par.Value.ID) == false)
+                            Task.Run(par.Value.MorirAnimacion);
+                            idJugadoresMuertos.Add(par.Value.ID);
+
+                        }
+                        
+                        if (idJugadoresMuertos.Contains(par.Value.ID))
+                        {
+                            if (par.Value.MUERTO == false)
                             {
-                                Task.Run(par.Value.MorirAnimacion);
-                                idJugadoresMuertos.Add(par.Value.ID);
+                                idJugadoresMuertos.Remove(par.Value.ID);
                             }
                         }
-
 
                     }
 
                 }
 
-                ManejarBalas(balas, locker, timerBalas, jugador);   
-
+                ManejarBalas(balas, locker, timerBalas, jugador, escenario);
 
                 
-                // Console.CursorLeft = 5;
-                 //Console.CursorTop = 20;
-                 //Console.Write(JsonSerializer.Serialize(jugadores.ToDictionary()) + "||||");
-
-
-
-
             }
         }
 
-        public static void PosicionarCursor(int x, int y, object locker, string dato)
+        static void MoverJugador(Jugador jugador, Entrada entrada, Timer timerDisparo, Escenario escenario)
         {
-            lock(locker) {
-                Console.CursorLeft = x;
-                Console.CursorTop = y;
-                Console.Write(dato);
-            }
-        }
-
-        public static void PosicionarCursor(int x, int y, object locker, string dato, ConsoleColor color)
-        {
-            lock (locker)
+            if (entrada.tecla == "LeftArrow" && jugador.POSX - 1 > escenario.X)
             {
-                Console.ForegroundColor = color;
-                Console.CursorLeft = x;
-                Console.CursorTop = y;
-                Console.Write(dato);
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-        }
+                jugador.POSX -= 1;
+                entrada.tecla = "";
+                jugador.FACING = 0;
 
-        static void LeerEntrada(Entrada ent)
-        {
-            while (true)
+            }
+            else if (entrada.tecla == "RightArrow" && jugador.POSX + jugador.ANCHO < escenario.LONGX)
             {
-                ent.tecla = Console.ReadKey(intercept: true).Key.ToString();
-                // Task.Delay(50);
+                jugador.POSX += 1;
+                entrada.tecla = "";
+                jugador.FACING = 1;
+
             }
+            else if (entrada.tecla == "UpArrow" && jugador.POSY - 2 > escenario.Y)
+            {
+                jugador.POSY -= 1;
+                entrada.tecla = "";
+                jugador.FACING = 2;
+
+            }
+            else if (entrada.tecla == "DownArrow" && jugador.POSY + jugador.ALTO < escenario.LONGY)
+            {
+                jugador.POSY += 1;
+                entrada.tecla = "";
+                jugador.FACING = 3;
+
+            }
+            else if (entrada.tecla == "Spacebar" & timerDisparo.FINALIZADO)
+            {
+
+                Bala bala;
+                if (jugador.FACING == 0)
+                {
+                    bala = new Bala(0, jugador.POSX, jugador.POSY, jugador.ID);
+                    jugador.BALAS.Add(bala);
+                    // balas.Add(bala);
+                }
+                else if (jugador.FACING == 1)
+                {
+                    bala = new Bala(1, jugador.POSX, jugador.POSY, jugador.ID);
+                    jugador.BALAS.Add(bala);
+                    //  balas.Add(bala);
+                }
+                else if (jugador.FACING == 2)
+                {
+                    bala = new Bala(2, jugador.POSX, jugador.POSY, jugador.ID);
+                    jugador.BALAS.Add(bala);
+                    // balas.Add(bala);
+                }
+                else if (jugador.FACING == 3)
+                {
+                    bala = new Bala(3, jugador.POSX, jugador.POSY, jugador.ID);
+                    jugador.BALAS.Add(bala);
+                    //  balas.Add(bala);
+                }
+                timerDisparo.FINALIZADO = false;
+                entrada.tecla = "";
+            }
+            
         }
 
-        static void ManejarBalas(List<Bala> balas, object locker, Timer timer, Jugador jugador)
+        static void ManejarBalas(List<Bala> balas, object locker, Timer timer, Jugador jugador, Escenario escenario)
         {
             if (timer.FINALIZADO)
             {
@@ -278,7 +253,7 @@ namespace Principal
                     foreach (Bala bala in balas.ToArray())
                     {
                         //Task.Delay(100);
-                        Program.PosicionarCursor(bala.SPOSX, bala.SPOSY, locker, " ");
+                        AuxMeth.PosicionarCursor(bala.SPOSX, bala.SPOSY, locker, " ");
                         //Console.CursorLeft = bala.SPOSX;
                         //Console.CursorTop = bala.SPOSY;
                         // Console.Write(" ");
@@ -300,20 +275,25 @@ namespace Principal
                         {
                             bala.SPOSY += 1;
                         }
-                        bala.DISTANCIA += 1; 
+                        bala.DISTANCIA += 1;
 
 
-                        if (bala.SPOSX == jugador.POSX & bala.SPOSY == jugador.POSY)
+                        if ((bala.SPOSX > jugador.POSX & bala.SPOSX < jugador.POSX + jugador.ANCHO)
+                            & (jugador.POSY <= bala.SPOSY & bala.SPOSY <= jugador.POSY + jugador.ALTO))
                         {
-                            jugador.VIDA = 0;
+                            if (bala.ORIGENID != jugador.ID)
+                            {
+                                jugador.VIDA = 0;
+                            }
                         }
 
-                        if (bala.comprobarDistancia())
+                        if (bala.SPOSX + 1 > escenario.LONGX || bala.SPOSX - 1 < escenario.X
+                            || bala.SPOSY - 2 < escenario.Y || bala.SPOSY + 1 > escenario.LONGY)
                         {
                             balas.Remove(bala);
                         } else
                         {
-                           Program.PosicionarCursor(bala.SPOSX, bala.SPOSY, locker, "*", ConsoleColor.Yellow);
+                           AuxMeth.PosicionarCursor(bala.SPOSX, bala.SPOSY, locker, "*", ConsoleColor.Yellow);
                         }
                        
                         
@@ -351,8 +331,57 @@ namespace Principal
                 } 
             }
         }
+
     }
 
+
+
+    class Escenario
+    {
+        int x;
+        int y;
+        int longX;
+        int longY;
+
+
+        string[] limitesSprites;  
+
+        public int X { get { return x; } set { x = value; } }
+        public int Y { get { return x; } set { y = value; } }
+
+        public int LONGX { get { return longX; } set { longX = value; } }   
+        public int LONGY { get { return longY; } set { longY = value; } }
+
+        public Escenario(int x, int y, int longX, int longY, string[] bordes)
+        {
+            this.x = x;
+            this.y = y;
+            this.longX = longX;
+            this.longY = longY;
+
+            limitesSprites = bordes;
+        }
+
+        public void DibujarBordes(object locker)
+        {
+            for (int i = x; i <= longX; i++)
+            {
+                AuxMeth.PosicionarCursor(i, y, locker, limitesSprites[0]);
+                AuxMeth.PosicionarCursor(i,longY, locker, limitesSprites[0]);
+            }
+            for (int i = y; i <= longY; i++)
+            {
+                AuxMeth.PosicionarCursor(x, i, locker, limitesSprites[1]);
+                AuxMeth.PosicionarCursor(longX, i, locker, limitesSprites[1]);
+            }
+        }
+    }
+
+    class Prop
+    {
+
+
+    }
 
     class Timer
     {
@@ -366,7 +395,6 @@ namespace Principal
             finalizado = true;
         }
     }
-
 
     class Menu
     {
@@ -387,13 +415,11 @@ namespace Principal
             set { cursor = value; }
         }
 
-
         public Menu(string cursor) {
 
             this.cursor = cursor;
             posCursor = (Console.WindowTop / 2) + 5;
         }
-
 
         public void DibujarMenu()
         {
@@ -426,11 +452,7 @@ namespace Principal
 
         }
 
-
-
-
     }
-
 
     class Jugador
     {
@@ -442,13 +464,16 @@ namespace Principal
 
         string spriteSombrero = "__▄▄__";
         string spriteCabeza =   "  ▀▀  ";
-        string spriteCuerpo =   "┌█▒▒█┐";
+        string spriteCuerpo =  $"┌█▒▒█┐";
 
         int facing;
 
         int vida;
         bool muerto;
         bool animado;
+
+        int ancho;
+        int alto;
 
         List<Bala> balas;
 
@@ -469,8 +494,10 @@ namespace Principal
         public List<Bala> BALAS { get { return balas; } set { balas = value; } }
 
         public object LOCKER { get { return locker; } set { locker = value; } } 
-        //public string SPRITEC { get { return spriteCabeza; } set { spriteCabeza = value; } }
-        //public string SPRITECU { get { return spriteCuerpo; } set { spriteCuerpo = value; } }
+ 
+        public int ANCHO { get { return ancho; } }
+
+        public int ALTO { get { return alto; } }
 
 
         public Jugador() {
@@ -478,9 +505,10 @@ namespace Principal
             this.vida = 100;
             this.muerto = false;
             this.animado = false;
+
         }
 
-        public Jugador(int posX, int posY, int id, object locker) {
+        public Jugador(int posX, int posY, int id, object locker, int ancho, int alto) {
             this.posX = posX ;
             this.posY = posY;
             this.id = id;
@@ -489,21 +517,23 @@ namespace Principal
             this.vida = 100;
             this.muerto = false;
             this.animado = false;
+            this.ancho = ancho;
+            this.alto = alto;
         }
 
         public void Dibujar()
         {
             if (muerto == false)
             {
-                Program.PosicionarCursor(POSX, POSY, LOCKER, spriteSombrero);
-                Program.PosicionarCursor(POSX, POSY + 1, LOCKER, spriteCabeza);
-                Program.PosicionarCursor(POSX, POSY + 2, LOCKER, spriteCuerpo);
+                AuxMeth.PosicionarCursor(POSX, POSY, LOCKER, spriteSombrero);
+                AuxMeth.PosicionarCursor(POSX, POSY + 1, LOCKER, spriteCabeza);
+                AuxMeth.PosicionarCursor(POSX, POSY + 2, LOCKER, spriteCuerpo);
             }
             else
             {
-                Program.PosicionarCursor(POSX, POSY, LOCKER, spriteSombrero, ConsoleColor.Red);
-                Program.PosicionarCursor(POSX, POSY + 1, LOCKER, spriteCabeza, ConsoleColor.Red);
-                Program.PosicionarCursor(POSX, POSY + 2, LOCKER, spriteCuerpo, ConsoleColor.Red);
+                AuxMeth.PosicionarCursor(POSX, POSY, LOCKER, spriteSombrero, ConsoleColor.Red);
+                AuxMeth.PosicionarCursor(POSX, POSY + 1, LOCKER, spriteCabeza, ConsoleColor.Red);
+                AuxMeth.PosicionarCursor(POSX, POSY + 2, LOCKER, spriteCuerpo, ConsoleColor.Red);
             }
         }
 
@@ -511,58 +541,45 @@ namespace Principal
         {
             Console.CursorLeft = bPosX;
             Console.CursorTop = bPosY;                     
-            Program.PosicionarCursor(bPosX, bPosY, LOCKER, "      ");
-            //Console.Write("    ");
+            AuxMeth.PosicionarCursor(bPosX, bPosY, LOCKER, "      ");
 
-            Program.PosicionarCursor(bPosX, bPosY + 1, LOCKER, "      ");
+            AuxMeth.PosicionarCursor(bPosX, bPosY + 1, LOCKER, "      ");
 
-            Program.PosicionarCursor(bPosX, bPosY + 2, LOCKER, "      ");
+            AuxMeth.PosicionarCursor(bPosX, bPosY + 2, LOCKER, "      ");
 
-            //Console.CursorLeft = bPosX;
-            //Console.CursorTop = bPosY + 1;
-
-            //Console.Write("       ");
         }
 
         public async Task MorirAnimacion()
         {
 
-            Program.PosicionarCursor(POSX, POSY, LOCKER, "         ", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, "       ", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "       ", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY, LOCKER, "#_▄- *#", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, "* ▀- #*", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "┌█▒▒█┐", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY, LOCKER, "         ", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 1, LOCKER, "       ", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 2, LOCKER, "       ", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY, LOCKER, "#_▄- *#", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 1, LOCKER, "* ▀- #*", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 2, LOCKER, "┌█▒▒█┐", ConsoleColor.Red);
             await Task.Delay(200);                       
-            Program.PosicionarCursor(POSX, POSY, LOCKER, "       ", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, "       ", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "      ", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY, LOCKER, "▀   ", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 1, LOCKER,"* ▀-", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "┌█▒▀-", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY, LOCKER, "       ", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 1, LOCKER, "       ", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 2, LOCKER, "      ", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY, LOCKER, "▀   ", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 1, LOCKER,"* ▀-", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 2, LOCKER, "┌█▒▀-", ConsoleColor.Red);
             await Task.Delay(200);
-            Program.PosicionarCursor(POSX, POSY, LOCKER, "   ", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, "*  ▀", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "┌█▀▀-", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY, LOCKER, "   ", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 1, LOCKER, "*  ▀", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 2, LOCKER, "┌█▀▀-", ConsoleColor.Red);
             await Task.Delay(200);
-            Program.PosicionarCursor(POSX, POSY, LOCKER, "       ", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, "       ", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "      ", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY, LOCKER, "   ", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 1, LOCKER, "   ", ConsoleColor.Red);
-            Program.PosicionarCursor(POSX, POSY + 2, LOCKER, "▄▄▄▄ ██", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY, LOCKER, "       ", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 1, LOCKER, "       ", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 2, LOCKER, "      ", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY, LOCKER, "   ", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 1, LOCKER, "   ", ConsoleColor.Red);
+            AuxMeth.PosicionarCursor(POSX, POSY + 2, LOCKER, "▄▄▄▄ ██", ConsoleColor.Red);
            
         }
 
     }
-
-
-    class Entrada
-    {
-        public string tecla;
-
-    }
-
 
     class Bala
     {
@@ -574,15 +591,19 @@ namespace Principal
         int distancia;
         //int bposx;
         //int bposy;
+        int origenID;
+
+
 
         public Bala() { }
 
-        public Bala(int direccion, int x, int y)
+        public Bala(int direccion, int x, int y, int origenID)
         {
             this.direccion = direccion;
             sposx = x;
             sposy = y;
             distancia = 0;
+            this.origenID = origenID;
           //  bposx = x;
           //  bposy = y;
         }
@@ -606,6 +627,7 @@ namespace Principal
 
         public int DISTANCIA { get { return distancia; } set { distancia = value; } }
 
+        public int ORIGENID { get { return origenID; } set { origenID = value; } }
        // public int BPOSX { get { return bposx; } set {  bposx = value; } }
         //public int BPOSY { get { return bposy; } set { bposy = value; } }
 
