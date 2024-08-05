@@ -21,7 +21,11 @@ namespace juegoOnlineBasico
 
         List<Bala> balas;
         List<Bala> balasT;
+        CancellationTokenSource tokenSource = new CancellationTokenSource();
+        CancellationToken token;
 
+        Task Receptor;
+        Task Enviador;
         public Cliente(string ip, int port, Jugador jugador, Dictionary<int, Jugador> jugadores, Dictionary<int, Jugador> jugadoresT, List<Bala> balas) { 
         
             this.jugador = jugador; 
@@ -44,16 +48,22 @@ namespace juegoOnlineBasico
 
         async void LogicaCliente()
         {
-            var Receptor = Task.Run(Receiver);
-            var Enviador = Task.Run(Sender);
+            token = tokenSource.Token;
+            Receptor = Task.Run(async () => { await Receiver(token); });
+            Enviador = Task.Run(async () => { await Sender(token); });
             await Task.WhenAll(Receptor, Enviador);
         }
 
 
-        async Task Sender()
+        async Task Sender(CancellationToken tokenCancelacion)
         {
             while (true)
             {
+                if (tokenCancelacion.IsCancellationRequested)
+                {
+                    break;
+                }
+
                 await Task.Delay(50);
                 try
                 {
@@ -66,15 +76,21 @@ namespace juegoOnlineBasico
                     continue;
                 }
 
-
-                }
+               
+            }
         }
 
 
-        async Task Receiver()
+        async Task Receiver(CancellationToken tokenCancelacion)
         {
             while (true)
             {
+                if (tokenCancelacion.IsCancellationRequested)
+                {
+                    Console.Clear();
+                    break;
+                }
+
                 byte[] buffer = new byte[2048];
                 await socket.ReceiveAsync(buffer);
 
@@ -114,8 +130,18 @@ namespace juegoOnlineBasico
                     continue;
                 
                 }
+
+               
             }
         }
         
+
+        public async Task Disconnect()
+        {
+            tokenSource.Cancel();
+            await Task.WhenAll(Receptor, Enviador);
+            socket.Shutdown(SocketShutdown.Both);
+            socket.Close();
+        }
     }
 }

@@ -31,12 +31,16 @@ namespace AuxMethods
             }
         }
 
-        public static void LeerEntrada(Entrada ent)
+        public static void LeerEntrada(Entrada ent, CancellationToken token)
         {
             while (true)
             {
                 ent.tecla = Console.ReadKey(intercept: true).Key.ToString();
                 // Task.Delay(50);
+                if (token.IsCancellationRequested)
+                {
+                    break;
+                }
             }
         }
     }

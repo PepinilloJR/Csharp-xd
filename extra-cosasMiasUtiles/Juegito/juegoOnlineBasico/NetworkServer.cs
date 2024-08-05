@@ -126,6 +126,18 @@ namespace juegoOnlineBasico
 
             }
         }
+
+
+        async Task CloseServer()
+        {
+            socket.Shutdown(SocketShutdown.Both);
+            socket.Close();
+
+            foreach (Socket cliente in clientes.ToArray()) { 
+                cliente.Shutdown(SocketShutdown.Both);
+                cliente.Close(); 
+            }
+        }
     }
 
     class Mensaje

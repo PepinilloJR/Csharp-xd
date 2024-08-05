@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
@@ -18,8 +19,8 @@ namespace Principal
         static void Main(string[] args)
         {
             Console.CursorVisible = false;
-            // Console.SetWindowSize(100, 50);
-            //Console.SetBufferSize(100, 50);
+            //Console.SetWindowSize(150, 50);
+           // Console.SetBufferSize(150, 50);
 
             Menu menu = new Menu(">>>");
 
@@ -46,38 +47,56 @@ namespace Principal
                     {
                         Console.Clear();
                         //Console.WriteLine("Crear partida!!!");
-
-                        Server server = new Server("26.34.159.22", 27015);
+                        string ip = MenuConexionServer();
+                        Server server = new Server(ip, 27015);
                         server.Iniciar();
                     }
                     else if (menu.posCURSOR == (Console.WindowTop / 2) + 10)
                     {
                         Console.Clear();
-                        //Console.WriteLine("Unirse a partida!!!");
+                        string ip = MenuConexionCliente();
+
                         Random rnd = new Random();
                         int iD = rnd.Next(0, 1000);
                         object locker = new object();
                         Jugador jugador = new Jugador(20, 20, iD, locker, 6, 3);
-                        Escenario escenario = new Escenario(1, 2, 110, 30, ["█", "▀"]);
+                        Escenario escenario = new Escenario(1, 2, 110, 30, ["▓", "▓"]);
                         Dictionary<int, Jugador> jugadores = new Dictionary<int, Jugador>();
                         Dictionary<int, Jugador> jugadoresT = new Dictionary<int, Jugador>(); // una lista para recordar el estado anterior de recibir un nuevo mensaje con los datos de los jugadores
 
                         List<Bala> balas = new List<Bala>();
 
-                        Cliente cliente = new Cliente("26.34.159.22", 27015, jugador, jugadores, jugadoresT, balas);
+                        Cliente cliente = new Cliente(ip, 27015, jugador, jugadores, jugadoresT, balas);
                         Task.Run(cliente.Iniciar);
                        
                         LogicaJuegoC(jugador, jugadores, jugadoresT, balas, locker, escenario);
 
+                        cliente.Disconnect();
                     }
 
                 }
-
+                key = "";
             }
 
 
 
         }
+
+
+        public static string MenuConexionCliente()
+        {
+            Console.Write("Ingrese la IP a conectarse: ");
+            string ip = Console.ReadLine();
+            return ip;
+        }
+
+        public static string MenuConexionServer()
+        {
+            Console.Write("Ingrese la IP con la que se conectaran los jugadores: ");
+            string ip = Console.ReadLine();
+            return ip;
+        }
+
 
         public static void LogicaJuegoC(Jugador jugador, Dictionary<int, Jugador> jugadores, Dictionary<int, Jugador> jugadoresT, List<Bala> balas, object locker, Escenario escenario)
         {
@@ -89,21 +108,29 @@ namespace Principal
 
             List<int> idJugadoresMuertos = new List<int>(); 
 
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken token = cancellationTokenSource.Token;    
             Task.Run(() =>
             {
-                AuxMeth.LeerEntrada(entrada);
+                AuxMeth.LeerEntrada(entrada, token);
             });
             
             Task.Run(() => { 
-                TimerBalas(timerBalas);
+                TimerBalas(timerBalas, token);
             });
 
             Task.Run(() =>
             {
-                TimerDisparo(timerDisparo);
+                TimerDisparo(timerDisparo, token);
             });
+
+
             escenario.DibujarBordes(locker);
             while (true) {
+
+                Console.CursorVisible = false;
+               // Console.SetWindowSize(150, 50);
+
                 bPosX = jugador.POSX;
                 bPosY = jugador.POSY;
                 //entrada.tecla = Console.ReadKey(intercept: true).Key.ToString();
@@ -134,6 +161,12 @@ namespace Principal
                     jugador.MUERTO = false;
                     jugador.ANIMADO = false;
                     entrada.tecla = "";
+                }
+
+                if (entrada.tecla == "X")
+                {
+                    cancellationTokenSource.Cancel();
+                    break;
                 }
                 // aca no deberia hacer falta porque no se modifica el coso, pero hay que ir viendo
 
@@ -173,9 +206,7 @@ namespace Principal
 
                 }
 
-                ManejarBalas(balas, locker, timerBalas, jugador, escenario);
-
-                
+                ManejarBalas(balas, locker, timerBalas, jugador, escenario);              
             }
         }
 
@@ -311,16 +342,20 @@ namespace Principal
             }
         }
 
-        static async void TimerBalas (Timer timer )
+        static async void TimerBalas (Timer timer, CancellationToken token )
         {
             while(true)
             {
                 await Task.Delay(10);
                 timer.FINALIZADO = true;
+                if (token.IsCancellationRequested)
+                {
+                    break;
+                }
             }
         }
 
-        static async void TimerDisparo (Timer timer )
+        static async void TimerDisparo (Timer timer, CancellationToken token)
         {
             while (true)
             {
@@ -329,6 +364,10 @@ namespace Principal
                     await Task.Delay(1000);
                     timer.FINALIZADO = true;
                 } 
+
+                if (token.IsCancellationRequested) {
+                    break; 
+                }   
             }
         }
 
